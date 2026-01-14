@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {  /* widget controller */  var c = this;};]]></client_script>
+        <client_script><![CDATA[api.controller=function() {
+  /* widget controller */
+  var c = this;
+};    ]]></client_script>
         <controller_as>c</controller_as>
         <css>/* Use the exact Purple Theme */
 .glass-container {
@@ -129,69 +132,106 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 06:01:31</sys_created_on>
         <sys_id>622e04bbc3dab61002cdb34ed4013123</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>Executive Analytics</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_622e04bbc3dab61002cdb34ed4013123</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-14 06:09:29</sys_updated_on>
-        <template><![CDATA[<div class="glass-container">
-  <div class="container">
-    
-    <div class="top-spacer"></div>
-
-    <div class="header-section text-center">
-      <h1 class="project-title">Executive Insights</h1>
-      <p class="project-desc">Real-time overview of asset distribution and spend</p>
+        <sys_updated_on>2026-01-14 12:00:21</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
     </div>
 
-    <div class="row display-flex">
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="stat-card glass-card">
-          <div class="icon-box"><i class="fa fa-money yellow"></i></div>
-          <label>Total Approved Spend</label>
-          <div class="stat-value">Rs {{data.stats.total_cost | number:0}}</div>
-        </div>
-      </div>
+    <ul class="nav-links">
+      <li ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li ng-click="c.navigate('my_assets_page')">
+        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      </li>
+      <li class="active" ng-click="c.navigate('executive_analytics')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
 
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="stat-card glass-card">
-          <div class="icon-box"><i class="fa fa-star purple"></i></div>
-          <label>In-Demand Asset</label>
-          <div class="stat-value">{{data.stats.top_asset || 'Laptop'}}</div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-sm-12 mb-4">
-        <div class="stat-card glass-card">
-          <div class="icon-box"><i class="fa fa-check-circle green"></i></div>
-          <label>Fulfillment Rate</label>
-          <div class="stat-value">{{data.stats.total_requests}} Assets</div>
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
         </div>
       </div>
     </div>
+    <div class="accent-glow"></div>
+  </aside>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div class="chart-section glass-card">
-          <h3>Request Status Distribution</h3>
-          
-          <div class="chart-item" ng-repeat="item in data.chartData">
-            <div class="chart-header">
-              <span>{{item.label}}</span>
-              <span class="count-badge">{{item.value}}</span>
+  <main class="main-body">
+    <div class="header-section">
+      <h1>Executive Analytics</h1>
+      <p>High-level insights into asset distribution, lifecycle, and costs</p>
+    </div>
+
+    <div class="analytics-highlights">
+      <div class="glass-card highlight-box">
+        <span class="h-label">Total Inventory Value</span>
+        <h2 class="h-value">£{{data.total_cost}}</h2>
+        <span class="h-sub text-green"><i class="fa fa-arrow-up"></i> 12% vs last month</span>
+      </div>
+      <div class="glass-card highlight-box">
+        <span class="h-label">Active Requests</span>
+        <h2 class="h-value">{{data.active_requests}}</h2>
+        <span class="h-sub text-yellow">Requires attention</span>
+      </div>
+      <div class="glass-card highlight-box">
+        <span class="h-label">Utilization Rate</span>
+        <h2 class="h-value">{{data.utilization}}%</h2>
+        <span class="h-sub text-purple">Assets currently assigned</span>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <div class="glass-card chart-container">
+        <h3>Asset Distribution by Category</h3>
+        <div class="chart-placeholder">
+          <div class="bar-row" ng-repeat="cat in data.cat_stats">
+            <div class="bar-label">{{cat.label}}</div>
+            <div class="bar-outer">
+              <div class="bar-inner" ng-style="{'width': cat.percent + '%'}"></div>
             </div>
-            <div class="progress-track">
-              <div class="progress-fill" ng-style="{'width': (item.value / data.total_count * 100) + '%'}"></div>
-            </div>
+            <div class="bar-value">{{cat.count}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card chart-container">
+        <h3>Request Volume (Last 6 Months)</h3>
+        <div class="chart-visual">
+          <svg viewBox="0 0 400 150" class="line-chart-svg">
+            <path d="M0,120 Q50,110 100,130 T200,80 T300,90 T400,40" fill="none" stroke="#7c3aed" stroke-width="3" />
+            <circle cx="100" cy="130" r="4" fill="#ec4899" />
+            <circle cx="200" cy="80" r="4" fill="#ec4899" />
+            <circle cx="400" cy="40" r="4" fill="#ec4899" />
+          </svg>
+          <div class="chart-legend">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
           </div>
         </div>
       </div>
     </div>
-
-  </div>
+  </main>
 </div>]]></template>
     </sp_widget>
 </record_update>
