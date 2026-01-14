@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column">
+    <sp_column action="DELETE">
+        <class_name/>
+        <order>1</order>
+        <semantic_tag/>
+        <size>12</size>
+        <size_lg/>
+        <size_sm/>
+        <size_xs/>
+        <sp_row display_value="1">eaaf68f3c39eb61002cdb34ed4013135</sp_row>
+        <sys_class_name>sp_column</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 08:27:53</sys_created_on>
+        <sys_id>36af68f3c39eb61002cdb34ed4013138</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_column_36af68f3c39eb61002cdb34ed4013138</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 08:27:53</sys_updated_on>
+    </sp_column>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</application>
+        <file_path/>
+        <instance_id>11226e861bfd711c699443f4bd4bcb5e</instance_id>
+        <instance_name>dev183548</instance_name>
+        <name>sp_column_36af68f3c39eb61002cdb34ed4013138</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column"><sp_column action="INSERT_OR_UPDATE"><class_name/><order>1</order><semantic_tag/><size>12</size><size_lg/><size_sm/><size_xs/><sp_row display_value="1">eaaf68f3c39eb61002cdb34ed4013135</sp_row><sys_class_name>sp_column</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-01-14 08:27:53</sys_created_on><sys_id>36af68f3c39eb61002cdb34ed4013138</sys_id><sys_mod_count>0</sys_mod_count><sys_name>1</sys_name><sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package><sys_policy/><sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope><sys_update_name>sp_column_36af68f3c39eb61002cdb34ed4013138</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-01-14 08:27:53</sys_updated_on></sp_column></record_update>]]></payload>
+        <payload_hash>-609630629</payload_hash>
+        <record_name>1</record_name>
+        <reverted_from/>
+        <source>d21b2de6c316721002cdb34ed40131a5</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 08:27:53</sys_created_on>
+        <sys_id>76af68f3c39eb61002cdb34ed401313a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19bbb9e519a0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 08:27:53</sys_updated_on>
+        <type>Column</type>
+        <update_guid>7aaf68f3ac9eb610977f6da6b1916739</update_guid>
+        <update_guid_history>7aaf68f3ac9eb610977f6da6b1916739:-609630629</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="1">374d74f3c3deb61002cdb34ed40131f1</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 09:27:29</sys_created_on>
+        <sys_db_object display_value="" name="sp_column">sp_column</sys_db_object>
+        <sys_id>029b6e7ea2a74c2e80a7de0d9df83591</sys_id>
+        <sys_metadata>36af68f3c39eb61002cdb34ed4013138</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_scope_delete display_value="">0a9f05ad17ca421d8084cc2c45e19869</sys_scope_delete>
+        <sys_update_name>sp_column_36af68f3c39eb61002cdb34ed4013138</sys_update_name>
+        <sys_update_version display_value="sp_column_36af68f3c39eb61002cdb34ed4013138">76af68f3c39eb61002cdb34ed401313a</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 09:27:29</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

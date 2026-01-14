@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function() {  /* widget controller */  var c = this;};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.kpi-container {
+  display: flex;
+  gap: 20px;
+}
+
+.kpi-card {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.kpi-card h2 {
+  font-size: 26px;
+  margin-bottom: 5px;
+}
+
+.pending { border-top: 5px solid #ff9800; }
+.approved { border-top: 5px solid #4caf50; }
+.rejected { border-top: 5px solid #f44336; }
+.cost { border-top: 5px solid #2196f3; }
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>my_request_kpis</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>My Request KPIs</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+
+    data.pending = 0;
+    data.approved = 0;
+    data.rejected = 0;
+    data.totalCost = 0;
+
+    var gr = new GlideRecord('u_asset_request');
+    gr.addQuery('requested_for', gs.getUserID());
+    gr.query();
+
+    while (gr.next()) {
+        if (gr.u_approval_status == 'pending')
+            data.pending++;
+
+        if (gr.u_approval_status == 'approved')
+            data.approved++;
+
+        if (gr.u_approval_status == 'rejected')
+            data.rejected++;
+
+        if (gr.u_total_cost)
+            data.totalCost += parseFloat(gr.u_total_cost);
+    }
+
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-13 10:57:39</sys_created_on>
+        <sys_id>e65808a7c31a761002cdb34ed4013172</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>My Request KPIs</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_e65808a7c31a761002cdb34ed4013172</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-13 10:58:48</sys_updated_on>
+        <template><![CDATA[<div class="kpi-container">
+  <div class="kpi-card pending">
+    <h2>{{data.pending}}</h2>
+    <p>Pending</p>
+  </div>
+
+  <div class="kpi-card approved">
+    <h2>{{data.approved}}</h2>
+    <p>Approved</p>
+  </div>
+
+  <div class="kpi-card rejected">
+    <h2>{{data.rejected}}</h2>
+    <p>Rejected</p>
+  </div>
+
+  <div class="kpi-card cost">
+    <h2>₹ {{data.totalCost}}</h2>
+    <p>Total Cost</p>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

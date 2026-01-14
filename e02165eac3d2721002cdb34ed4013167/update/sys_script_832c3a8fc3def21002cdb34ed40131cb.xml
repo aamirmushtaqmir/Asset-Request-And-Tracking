@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_1862743_asset_re_asset_request_table</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Validate Stock Availability</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+
+   
+    var catalogGR = new GlideRecord('x_1862743_asset_re_asset_catalog_table'); 
+    if (catalogGR.get(current.request_asset)) {
+        var stock = parseInt(catalogGR.available_quantity);
+        var requested = parseInt(current.quantity);
+
+        if (requested > stock) {
+            gs.addErrorMessage("Request failed: Not enough stock in the catalog.");
+            current.setAbortAction(true); 
+        }
+    }
+
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-12 10:49:50</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>832c3a8fc3def21002cdb34ed40131cb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Validate Stock Availability</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sys_script_832c3a8fc3def21002cdb34ed40131cb</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-12 10:49:50</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=832c3a8fc3def21002cdb34ed40131cb"/>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>832c3a8fc3def21002cdb34ed40131cb</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-12 10:49:50</sys_created_on>
+        <sys_id>6afc72cfc3def21002cdb34ed4013157</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-12 10:49:50</sys_updated_on>
+        <table>sys_script</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

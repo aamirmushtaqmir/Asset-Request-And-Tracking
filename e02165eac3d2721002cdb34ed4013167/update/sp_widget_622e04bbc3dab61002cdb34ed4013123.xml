@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function() {  /* widget controller */  var c = this;};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* Use the exact Purple Theme */
+.glass-container {
+  background: linear-gradient(135deg, #1a0b2e 0%, #4c1d95 100%);
+  min-height: 100vh;
+  padding: 20px 0 60px 0;
+  color: white;
+  overflow-x: hidden; /* Hard stop for any horizontal floating */
+}
+
+.top-spacer { height: 40px; }
+
+/* The fix for 'touching the edges' */
+.container {
+  max-width: 1140px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  height: 100%;
+  box-sizing: border-box; /* Prevents padding from increasing width */
+}
+
+/* Restoring the Status Distribution Line */
+.chart-section h3 {
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+}
+
+.progress-track {
+  background: rgba(255, 255, 255, 0.1); /* The background 'line' track */
+  height: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+  display: block; /* Ensures visibility */
+}
+
+.progress-fill {
+  /* Re-introducing the purple-pink gradient */
+  background: linear-gradient(90deg, #7c3aed 0%, #ec4899 100%);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.8s ease-in-out;
+}
+
+.count-badge {
+  background: rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Icon Colors from Dashboard */
+.yellow { color: #fbbf24; }
+.purple { color: #a78bfa; }
+.green { color: #34d399; }</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>executive_analytics</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Executive Analytics</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.stats = {
+        total_requests: 0,
+        total_cost: 0,
+        top_asset: "",
+        pending_count: 0
+    };
+    data.chartData = [];
+    var table = 'x_1862743_asset_re_asset_request_table';
+
+    // 1. Get Total Requests & Sum of Costs
+    var ga = new GlideAggregate(table);
+    ga.addAggregate('COUNT');
+    ga.addAggregate('SUM', 'total_cost');
+    ga.addQuery('approval', 'approved'); // Only count realized costs
+    ga.setGroup(false);
+    ga.query();
+    if (ga.next()) {
+        data.stats.total_requests = ga.getAggregate('COUNT');
+        data.stats.total_cost = ga.getAggregate('SUM', 'total_cost') || 0;
+    }
+
+    // 2. Get Top Requested Asset
+    var topAsset = new GlideAggregate(table);
+    topAsset.addAggregate('COUNT', 'request_asset');
+    topAsset.orderByAggregate('COUNT', 'request_asset');
+    topAsset.query();
+    if (topAsset.next()) {
+        data.stats.top_asset = topAsset.request_asset.getDisplayValue();
+    }
+
+    // 3. Prepare Chart Data (Requests by State)
+    var stateCount = new GlideAggregate(table);
+    stateCount.addAggregate('COUNT', 'approval');
+    stateCount.groupBy('approval');
+    stateCount.query();
+    while (stateCount.next()) {
+        data.chartData.push({
+            label: stateCount.approval.getDisplayValue() || 'Unknown',
+            value: stateCount.getAggregate('COUNT', 'approval')
+        });
+    }
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 06:01:31</sys_created_on>
+        <sys_id>622e04bbc3dab61002cdb34ed4013123</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Executive Analytics</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_622e04bbc3dab61002cdb34ed4013123</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 06:09:29</sys_updated_on>
+        <template><![CDATA[<div class="glass-container">
+  <div class="container">
+    
+    <div class="top-spacer"></div>
+
+    <div class="header-section text-center">
+      <h1 class="project-title">Executive Insights</h1>
+      <p class="project-desc">Real-time overview of asset distribution and spend</p>
+    </div>
+
+    <div class="row display-flex">
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="stat-card glass-card">
+          <div class="icon-box"><i class="fa fa-money yellow"></i></div>
+          <label>Total Approved Spend</label>
+          <div class="stat-value">Rs {{data.stats.total_cost | number:0}}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="stat-card glass-card">
+          <div class="icon-box"><i class="fa fa-star purple"></i></div>
+          <label>In-Demand Asset</label>
+          <div class="stat-value">{{data.stats.top_asset || 'Laptop'}}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-12 mb-4">
+        <div class="stat-card glass-card">
+          <div class="icon-box"><i class="fa fa-check-circle green"></i></div>
+          <label>Fulfillment Rate</label>
+          <div class="stat-value">{{data.stats.total_requests}} Assets</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="chart-section glass-card">
+          <h3>Request Status Distribution</h3>
+          
+          <div class="chart-item" ng-repeat="item in data.chartData">
+            <div class="chart-header">
+              <span>{{item.label}}</span>
+              <span class="count-badge">{{item.value}}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" ng-style="{'width': (item.value / data.total_count * 100) + '%'}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

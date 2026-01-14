@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($window, $location) {
+  var c = this;
+
+  c.currentPage = 'my_assets_page';
+
+  c.navigate = function(pageId) {
+    if (pageId === 'art') {
+      $window.location.href = '/art';
+    } else {
+      $window.location.href = '/art?id=' + pageId;
+    }
+  };
+
+  c.reportIssue = function(assetId) {
+    // Redirect to incident form or support page
+    $window.location.href = '/art?id=sc_cat_item&sys_id=id_of_your_incident_item';
+  };
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.asset-dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* SIDEBAR (Consistent with portal) */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+  
+  .nav-header {
+    display: flex; align-items: center; padding: 0 25px; margin-bottom: 50px;
+    .logo-box { background: #7c3aed; padding: 8px 10px; border-radius: 8px; margin-right: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+  }
+  .nav-links {
+    list-style: none; padding: 0 15px; flex-grow: 1;
+    li {
+      padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.6);
+      i { margin-right: 15px; width: 20px; text-align: center; }
+      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+    }
+  }
+  .nav-footer {
+    padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+    .user-pill {
+      display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+      .user-init { width: 35px; height: 35px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+      .u-name { font-size: 0.9rem; font-weight: 600; }
+    }
+  }
+  .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
+}
+
+/* CONTENT AREA */
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px;
+  padding: 60px 80px;
+
+  .header-section {
+    margin-bottom: 40px;
+    h1 { font-weight: 700; font-size: 2.5rem; margin-bottom: 5px; }
+    p { opacity: 0.7; font-size: 1.1rem; }
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 25px;
+}
+
+.asset-item {
+  transition: all 0.3s ease;
+  &amp;:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(10px); }
+}
+
+.asset-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.asset-tag {
+  font-size: 0.85rem;
+  color: #a78bfa;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.asset-info {
+  h3 { margin: 8px 0; font-size: 1.5rem; font-weight: 600; }
+  p { font-size: 0.9rem; opacity: 0.6; }
+}
+
+.asset-details {
+  display: flex;
+  gap: 50px;
+  .detail-item {
+    text-align: center;
+    label { display: block; font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 5px; }
+    span { font-weight: bold; font-size: 1.1rem; }
+  }
+}
+
+.status-badge {
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+.status-inuse { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+
+.btn-report {
+  background: white;
+  border: none;
+  color: #1a0b2e;
+  padding: 10px 25px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: 0.3s;
+  &amp;:hover { background: #f87171; color: white; transform: scale(1.05); }
+}
+
+.no-data { padding: 80px; opacity: 0.8; }</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>my_assigned_inventory</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>My Assigned Inventory</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    var user = gs.getUser();
+    data.user_first_name = user.getFirstName();
+    data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
+    data.project_name = "IT Asset Management";
+    
+    data.assets = [];
+    var userId = gs.getUserID();
+    
+    // Change this to your actual inventory table name
+    // Standard ServiceNow uses 'alm_asset' or 'alm_hardware'
+    var assetTable = 'alm_hardware'; 
+
+    var gr = new GlideRecord(assetTable);
+    gr.addQuery('assigned_to', userId); 
+    gr.addQuery('install_status', '1'); // Typically '1' means 'In Use'
+    gr.orderByDesc('assigned');
+    gr.query();
+
+    while (gr.next()) {
+        var obj = {};
+        obj.tag = gr.getValue('asset_tag');
+        obj.model = gr.model.getDisplayValue();
+        obj.serial = gr.getValue('serial_number');
+        obj.category = gr.model_category.getDisplayValue();
+        obj.assigned_date = gr.getDisplayValue('assigned');
+        obj.sys_id = gr.getUniqueValue();
+        
+        data.assets.push(obj);
+    }
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 06:11:39</sys_created_on>
+        <sys_id>cb70103fc3dab61002cdb34ed401316d</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>My Assigned Inventory</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_cb70103fc3dab61002cdb34ed401316d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 11:33:56</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
+    </div>
+
+    <ul class="nav-links">
+      <li ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li class="active" ng-click="c.navigate('my_assets_page')">
+        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-glow"></div>
+  </aside>
+
+  <main class="main-body">
+    <div class="header-section">
+      <h1>My Assigned Assets</h1>
+      <p>A list of IT equipment currently registered to you</p>
+    </div>
+
+    <div class="inventory-list">
+      <div ng-if="data.assets.length == 0" class="glass-card text-center no-data">
+        <i class="fa fa-archive fa-3x mb-3" style="opacity: 0.3;"></i>
+        <h3>No assets found.</h3>
+        <p>If you have equipment that isn't listed here, please contact IT.</p>
+      </div>
+
+      <div class="asset-item glass-card" ng-repeat="asset in data.assets">
+        <div class="asset-main">
+          <div class="asset-info">
+            <span class="asset-tag">{{asset.tag || 'No Tag'}}</span>
+            <h3>{{asset.model}}</h3>
+            <p><i class="fa fa-barcode"></i> Serial: {{asset.serial}}</p>
+          </div>
+          
+          <div class="asset-details">
+            <div class="detail-item">
+              <label>Category</label>
+              <span>{{asset.category}}</span>
+            </div>
+            <div class="detail-item">
+              <label>Assigned Date</label>
+              <span>{{asset.assigned_date}}</span>
+            </div>
+            <div class="detail-item">
+              <label>Status</label>
+              <span class="status-badge status-inuse">In Use</span>
+            </div>
+          </div>
+          
+          <div class="asset-action">
+             <button class="btn-report" ng-click="c.reportIssue(asset.sys_id)">Report Issue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>]]></template>
+    </sp_widget>
+</record_update>

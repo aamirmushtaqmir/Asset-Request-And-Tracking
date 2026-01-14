@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function($location) {
+  var c = this;
+  c.openRequestForm = function(assetID) {
+    var table = 'x_1862743_asset_re_asset_request_table';
+    var url = '?id=form&table=' + table + '&sys_id=-1&query=request_asset=' + assetID;
+    $location.url(url);
+  };
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* Main background container - Purple gradient */
+.glass-container {
+  background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+  background-image: linear-gradient(to right top, #4c1d95, #5b2aa3, #6b37b1, #7b44bf, #8c52cd);
+  min-height: 100vh; /* Ensures it covers the whole height */
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif; /* Optional: A nicer font if available */
+}
+
+/* The "Glass" Card */
+.asset-card-glass {
+  background: rgba(255, 255, 255, 0.1); /* Translucent white */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Soft shadow */
+  backdrop-filter: blur(10px); /* The "frosted glass" blur effect */
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18); /* Subtle white border */
+  padding: 20px;
+  margin-bottom: 30px;
+  color: white; /* All text is white */
+  transition: transform 0.3s ease;
+  height: 100%; /* Ensures uniform height in rows */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &amp;:hover {
+    transform: translateY(-10px); /* Lift effect on hover */
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+  }
+}
+
+/* Image area */
+.image-container-glass {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  background: rgba(0,0,0,0.1); /* Slightly darker area for image contrast */
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.asset-img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.2)); /* Makes image pop */
+}
+
+/* Typography &amp; Details */
+.card-title {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: white;
+  text-align: center;
+}
+
+.text-truncate-glass {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255,255,255,0.7); /* Slightly faded white for description */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 1.1em;
+  padding: 0 10px;
+}
+
+/* The "Glass" Button */
+.btn-glass {
+  background: white;
+  color: #4c1d95; /* Purple text matching background */
+  border: none;
+  border-radius: 50px; /* Pill shape */
+  padding: 12px;
+  font-weight: bold;
+  width: 100%;
+  transition: all 0.3s ease;
+
+  &amp;:hover {
+    background: #f0f0f0;
+    box-shadow: 0 0 15px rgba(255,255,255,0.5);
+  }
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>it_request_widget</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>IT Request Widget</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.assets = [];
+    var tableName = 'x_1862743_asset_re_asset_catalog_table'; 
+    var gr = new GlideRecord(tableName);
+    gr.addActiveQuery();
+    gr.query();
+
+    while (gr.next()) {
+        var asset = {};
+        asset.name = gr.getValue('asset_name');
+        asset.description = gr.getValue('asset_description');
+        asset.unit_cost = gr.getValue('unit_cost'); 
+        asset.quantity = gr.getValue('available_quantity');
+        var sysId = gr.getUniqueValue();
+        asset.sys_id = sysId;
+
+        // Optimized Image Logic
+        if (gr.image) {
+            asset.image = '/' + gr.image.getDisplayValue(); 
+        } else {
+            asset.image = "service_catalog_placeholder.png";
+        }
+        data.assets.push(asset);
+    }
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-12 10:56:41</sys_created_on>
+        <sys_id>768e3e4fc3def21002cdb34ed401315b</sys_id>
+        <sys_mod_count>21</sys_mod_count>
+        <sys_name>IT Request Widget</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_768e3e4fc3def21002cdb34ed401315b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-13 07:21:34</sys_updated_on>
+        <template><![CDATA[<div class="glass-container">
+  <div class="container">
+    <div class="row display-flex">
+      <div class="col-sm-6 col-md-4" ng-repeat="item in data.assets">
+        
+        <div class="asset-card-glass">
+          
+          <div>
+             <div class="image-container-glass">
+                <img ng-if="item.image" ng-src="{{item.image}}" class="img-responsive asset-img" />
+             </div>
+             <h4 class="card-title">{{item.name}}</h4>
+             <p class="text-truncate-glass" title="{{item.description}}">{{item.description}}</p>
+          </div>
+         
+          <div>
+             <div class="stats-row">
+                <div>
+                   <i class="fa fa-cubes"></i> Stock: <strong>{{item.quantity}}</strong>
+                </div>
+                <div>
+                   <strong>{{item.cost}}</strong>
+                </div>
+             </div>
+            
+             <button class="btn btn-glass" ng-click="c.openRequestForm(item.sys_id)">
+               Request Asset
+             </button>
+          </div>
+          
+        </div> </div> </div> </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($window, $location) {
+  var c = this;
+  c.selectedCat = 'All';
+  
+  // Set current page for sidebar highlight
+  c.currentPage = $location.search().id || 'browse_and_request_page';
+
+  // Navigation Logic for Sidebar
+  c.navigate = function(pageId) {
+    if (pageId === 'art') {
+      $window.location.href = '/art';
+    } else {
+      $window.location.href = '/art?id=' + pageId;
+    }
+  };
+
+  // Catalog Filtering
+  c.setFilter = function(cat) {
+    c.selectedCat = cat;
+  };
+
+  c.categoryFilter = function(item) {
+    if (c.selectedCat === 'All') return true;
+    return item.category === c.selectedCat;
+  };
+
+  // Redirect to Request Form
+  c.selectAsset = function(assetID) {
+    var table = 'x_1862743_asset_re_asset_request_table';
+    var url = '?id=form&table=' + table + '&sys_id=-1&view=sp&query=request_asset=' + assetID;
+    $location.url(url);
+  };
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ROOT STRUCTURE */
+.asset-dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* SIDEBAR (Same as Dashboard) */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed; /* Keep it locked on the left */
+  height: 100vh;
+  
+  .nav-header {
+    display: flex; align-items: center; padding: 0 25px; margin-bottom: 50px;
+    .logo-box { background: #7c3aed; padding: 8px 10px; border-radius: 8px; margin-right: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+  }
+  .nav-links {
+    list-style: none; padding: 0 15px; flex-grow: 1;
+    li {
+      padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.6);
+      i { margin-right: 15px; width: 20px; text-align: center; }
+      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+    }
+  }
+  .nav-footer {
+    padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+    .user-pill {
+      display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+      .user-init { width: 35px; height: 35px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+      .u-name { font-size: 0.9rem; font-weight: 600; }
+    }
+  }
+  .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
+}
+
+/* MAIN BODY (Catalog Adjustment) */
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px; /* Offset for fixed sidebar */
+  padding: 40px 60px;
+  
+  .content-header {
+    margin-bottom: 50px;
+    h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 10px; }
+    p { opacity: 0.7; font-size: 1.1rem; }
+  }
+}
+
+/* CATALOG SPECIFIC UI */
+.filter-bar {
+  margin-top: 30px;
+  .pill {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    margin: 5px;
+    transition: 0.3s;
+    &amp;:hover, &amp;.active {
+      background: #7c3aed;
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+    }
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+  height: 100%;
+  transition: transform 0.3s ease;
+  &amp;:hover { transform: translateY(-10px); }
+}
+
+.image-box {
+  height: 160px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  img { max-height: 120px; border-radius: 8px; }
+}
+
+.description-text {
+  font-size: 0.9rem;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.asset-meta {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-size: 0.9rem;
+  .price-tag { font-weight: 700; color: #a78bfa; font-size: 1.1rem; }
+}
+
+.btn-request {
+  width: 100%;
+  background: #fff;
+  color: #1a0b2e;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.2s;
+  &amp;:hover { background: #7c3aed; color: white; }
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>browse_and_request_widget</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Browse And Request Widget</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    var user = gs.getUser();
+    data.user_first_name = user.getFirstName();
+    data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
+    data.project_name = "IT Asset Management";
+    
+    data.assets = [];
+    data.categories = [];
+    var catalogTable = 'x_1862743_asset_re_asset_catalog_table';
+
+    // 1. Get Categories
+    var catGr = new GlideAggregate(catalogTable);
+    catGr.addAggregate('COUNT', 'asset_category');
+    catGr.query();
+    while (catGr.next()) {
+        var cat = catGr.getValue('asset_category');
+        if (cat) data.categories.push(cat);
+    }
+
+    // 2. Get All Assets
+    var gr = new GlideRecord(catalogTable);
+    gr.addActiveQuery();
+    gr.query();
+    while (gr.next()) {
+        var asset = {};
+        asset.name = gr.getValue('asset_name');
+        asset.description = gr.getValue('asset_description');
+        asset.cost = gr.getValue('unit_cost');
+        asset.qty = gr.getValue('available_quantity');
+        asset.category = gr.getValue('asset_category');
+        asset.sys_id = gr.getUniqueValue();
+        
+        if (gr.image) {
+            asset.image = '/' + gr.image.getDisplayValue(); 
+        } else {
+            asset.image = "/images/service_catalog/generic_small.gif";
+        }
+        data.assets.push(asset);
+    }
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 05:44:21</sys_created_on>
+        <sys_id>9b3a8cb3c3dab61002cdb34ed40131db</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>Browse And Request Widget</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_9b3a8cb3c3dab61002cdb34ed40131db</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 11:24:05</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
+    </div>
+
+    <ul class="nav-links">
+      <li ng-class="{'active': c.currentPage == 'dashboard'}" ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li class="active" ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li ng-click="c.navigate('my_assets_page')">
+        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-glow"></div>
+  </aside>
+
+  <main class="main-body">
+    <div class="content-header text-center">
+      <h1>Asset Catalog</h1>
+      <p>Select hardware or software to submit a new request</p>
+      
+      <div class="filter-bar">
+        <button class="pill" ng-class="{'active': c.selectedCat == 'All'}" ng-click="c.setFilter('All')">All</button>
+        <button class="pill" ng-repeat="cat in data.categories" 
+                ng-class="{'active': c.selectedCat == cat}" 
+                ng-click="c.setFilter(cat)">
+          {{cat}}
+        </button>
+      </div>
+    </div>
+
+    <div class="row display-flex">
+      <div class="col-md-4 mb-4" ng-repeat="item in data.assets | filter: c.categoryFilter">
+        <div class="asset-card glass-card">
+          <div class="image-box">
+            <img ng-src="{{item.image}}" class="img-responsive">
+          </div>
+          <div class="card-body">
+            <h3>{{item.name}}</h3>
+            <p class="text-muted description-text">{{item.description}}</p>
+            <div class="asset-meta">
+              <span><i class="fa fa-cubes"></i> Stock: {{item.qty}}</span>
+              <span class="price-tag">£{{item.cost}}</span>
+            </div>
+            <button class="btn-request" ng-click="c.selectAsset(item.sys_id)">
+              Request Asset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+    <sp_instance action="DELETE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">ae6bd07bc31eb61002cdb34ed40131d0</sp_column>
+        <sp_widget display_value="Asset Dashboard">21378c73c3dab61002cdb34ed4013184</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 06:59:46</sys_created_on>
+        <sys_id>cc8b10bbc31eb61002cdb34ed4013128</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_instance_cc8b10bbc31eb61002cdb34ed4013128</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 09:27:58</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="DELETE" query="documentkey=cc8b10bbc31eb61002cdb34ed4013128"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</application>
+        <file_path/>
+        <instance_id>11226e861bfd711c699443f4bd4bcb5e</instance_id>
+        <instance_name>dev183548</instance_name>
+        <name>sp_instance_cc8b10bbc31eb61002cdb34ed4013128</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance"><sp_instance action="INSERT_OR_UPDATE"><active>true</active><class_name/><color>default</color><css/><glyph/><id/><order>1</order><roles/><short_description/><size>md</size><sp_column display_value="1">ae6bd07bc31eb61002cdb34ed40131d0</sp_column><sp_widget display_value="Asset Dashboard">21378c73c3dab61002cdb34ed4013184</sp_widget><sys_class_name>sp_instance</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-01-14 06:59:46</sys_created_on><sys_id>cc8b10bbc31eb61002cdb34ed4013128</sys_id><sys_mod_count>8</sys_mod_count><sys_name/><sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package><sys_policy/><sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope><sys_update_name>sp_instance_cc8b10bbc31eb61002cdb34ed4013128</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-01-14 09:27:58</sys_updated_on><title/><url/><widget_parameters/></sp_instance><sys_translated_text action="delete_multiple" query="documentkey=cc8b10bbc31eb61002cdb34ed4013128"/></record_update>]]></payload>
+        <payload_hash>-926859118</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>d21b2de6c316721002cdb34ed40131a5</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 09:27:58</sys_created_on>
+        <sys_id>e26df437c3deb61002cdb34ed401313e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19bbbd551710000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 09:27:58</sys_updated_on>
+        <type>Instance</type>
+        <update_guid>aa6df4370adeb610891be12939293f3d</update_guid>
+        <update_guid_history>aa6df4370adeb610891be12939293f3d:-926859118,52bc78f3e2deb6102a5e6c8cf3064192:364611505,4cefa437079eb610f79166ec0c8f374a:-926859118,82df2837a29eb610b374b3650f5a389e:364611505,9d0fe4f3339eb6107b8bcf7480b2714c:-926859118,2aeea0f3019eb610a550f209247c78e8:364611505,262d5c3f8d1eb6106d26d8997a04dc4c:-926859118,760c18bbfa1eb6101eb421fc0eaca144:364611505,888b98bb111eb61080bd400d8eb38b6b:-926859118</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">6d800537c3deb61002cdb34ed40131f7</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 09:41:32</sys_created_on>
+        <sys_db_object display_value="" name="sp_instance">sp_instance</sys_db_object>
+        <sys_id>6e21575c88a84c78960025e94fdec604</sys_id>
+        <sys_metadata>cc8b10bbc31eb61002cdb34ed4013128</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_scope_delete display_value="">0a9f05ad17ca421d8084cc2c45e19869</sys_scope_delete>
+        <sys_update_name>sp_instance_cc8b10bbc31eb61002cdb34ed4013128</sys_update_name>
+        <sys_update_version display_value="sp_instance_cc8b10bbc31eb61002cdb34ed4013128">e26df437c3deb61002cdb34ed401313e</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 09:41:32</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="37b4e5eec3d2721002cdb34ed40131e8" extends="task" label="Asset Request Table" max_length="40" name="x_1862743_asset_re_asset_request_table" type="collection">
+        <element attributes="encode_utf8=false" label="Request Asset" max_length="32" name="request_asset" reference="x_1862743_asset_re_asset_catalog_table" type="reference"/>
+        <element attributes="edge_encryption_enabled=true" choice="3" default="Pending" label="Approval Status" max_length="40" name="approval_status" read_only="true" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Approved" sequence="1" value="approved"/>
+                <element inactive_on_update="false" label="Pending" sequence="0" value="pending"/>
+                <element inactive_on_update="false" label="Rejected" sequence="2" value="rejected"/>
+            </choice>
+        </element>
+        <element label="Business Justification" mandatory="true" max_length="40" name="business_justification" type="string"/>
+        <element default="1" label="Quantity" max_length="40" name="quantity" type="integer"/>
+        <element attributes="omit_sys_original=false" calculation="(function calculatedFieldValue(current) {&#13;&#10;    // Multiply Quantity by the Unit Cost from the referenced Asset record&#13;&#10;&#9;return current.quantity * current.request_asset.unit_cost;&#13;&#10;})(current);" default="1" label="Total Cost" max_length="20" name="total_cost" read_only="true" type="currency" virtual="true"/>
+        <element attributes="edge_encryption_enabled=true" label="Delivery Date" mandatory="true" max_length="40" name="delivery_date" type="glide_date"/>
+        <element attributes="edge_encryption_enabled=true" choice="1" label="Delivery Location" max_length="40" name="delivery_location" type="string">
+            <choice>
+                <element inactive_on_update="false" label="Brazil" value="brazil"/>
+                <element inactive_on_update="false" label="India" value="india"/>
+                <element inactive_on_update="false" label="California" value="california"/>
+                <element inactive_on_update="false" label="Japan" value="japan"/>
+            </choice>
+        </element>
+        <element choice="1" display="true" label="Urgencies" max_length="40" name="urgencies" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Low" sequence="0" value="low"/>
+                <element inactive_on_update="false" label="Medium" sequence="1" value="Medium"/>
+                <element inactive_on_update="false" label="Critical" sequence="3" value="Critical"/>
+                <element inactive_on_update="false" label="High" sequence="2" value="High"/>
+            </choice>
+        </element>
+    </element>
+</database>

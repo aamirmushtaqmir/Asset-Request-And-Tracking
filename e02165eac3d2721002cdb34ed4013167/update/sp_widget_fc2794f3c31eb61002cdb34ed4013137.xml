@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($location, $scope) {
+  var c = this;
+  
+  // Track active page based on URL
+  c.currentPage = $location.search().id || 'dashboard';
+
+  c.navigate = function(pageId) {
+    $location.search('id', pageId);
+  };
+
+  $scope.$on('$locationChangeSuccess', function() {
+    c.currentPage = $location.search().id || 'dashboard';
+  });
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>$nav-width: 260px;
+$accent-gradient: linear-gradient(180deg, #7c3aed 0%, #ec4899 100%);
+
+.it-side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $nav-width;
+  height: 100vh;
+  background: rgba(26, 11, 46, 0.98);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  
+  .logo-icon {
+    background: #7c3aed;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    color: white;
+  }
+  
+  .brand-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+  }
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // Pushes the profile section to the bottom
+  padding: 0 10px;
+  
+  a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    i {
+      width: 20px;
+      margin-right: 15px;
+      font-size: 1.1rem;
+    }
+
+    &amp;:hover, &amp;.active {
+      color: #ffffff;
+      background: rgba(124, 58, 237, 0.15);
+      
+      i { color: #7c3aed; }
+    }
+
+    &amp;.active {
+      background: rgba(124, 58, 237, 0.2);
+      border-left: 3px solid #7c3aed;
+    }
+  }
+}
+
+.nav-profile {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  gap: 12px;
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    .user-name { font-size: 0.9rem; color: #fff; font-weight: 600; }
+    .user-role { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+  }
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #7c3aed;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+  .initials-circle {
+    background: #4c1d95;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+  }
+}
+
+/* Vertical Gradient Line on the very edge */
+.nav-accent-line {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: $accent-gradient;
+}
+
+/* Spacer for the rest of the Portal page content */
+.side-nav-spacer {
+  margin-left: $nav-width;
+}
+
+// Mobile support: Hide sidebar or transform it
+@media (max-width: 768px) {
+  .it-side-nav { width: 70px; }
+  .brand-text, .user-details, .nav-menu span { display: none; }
+  .side-nav-spacer { margin-left: 70px; }
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>global_navigation_header</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Global Navigation Header</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    var userGR = new GlideRecord('sys_user');
+    if (userGR.get(gs.getUserID())) {
+        data.user_name = userGR.getDisplayValue('name');
+        data.user_initials = gs.getUser().getFirstName().charAt(0) + gs.getUser().getLastName().charAt(0);
+        
+        // Fetch live profile image if it exists
+        if (userGR.photo.getDisplayValue()) {
+            data.user_img = userGR.photo.getDisplayValue() + ".iix";
+        }
+    }
+    
+    // Branding Details
+    data.project_title = "IT Asset Management";
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-14 06:40:43</sys_created_on>
+        <sys_id>fc2794f3c31eb61002cdb34ed4013137</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>Global Navigation Header</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_fc2794f3c31eb61002cdb34ed4013137</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-14 09:45:54</sys_updated_on>
+        <template><![CDATA[<nav class="it-side-nav">
+  <div class="nav-brand" ng-click="c.navigate('dashboard')">
+    <div class="logo-icon"><i class="fa fa-desktop"></i></div>
+    <span class="brand-text">{{data.project_title}}</span>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-menu">
+    <a ng-click="c.navigate('dashboard')" ng-class="{'active': c.currentPage == 'dashboard'}">
+      <i class="fa fa-th-large"></i> <span>Dashboard</span>
+    </a>
+    <a ng-click="c.navigate('request_asset')" ng-class="{'active': c.currentPage == 'request_asset'}">
+      <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+    </a>
+    <a ng-click="c.navigate('track_requests')" ng-class="{'active': c.currentPage == 'track_requests'}">
+      <i class="fa fa-list-alt"></i> <span>Track Requests</span>
+    </a>
+    <a ng-click="c.navigate('my_assets')" ng-class="{'active': c.currentPage == 'my_assets'}">
+      <i class="fa fa-laptop"></i> <span>My Assets</span>
+    </a>
+    <a ng-click="c.navigate('executive_analytics')" ng-class="{'active': c.currentPage == 'executive_analytics'}">
+      <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+    </a>
+  </div>
+
+  <div class="nav-profile">
+    <div class="user-avatar">
+      <img ng-if="data.user_img" ng-src="{{data.user_img}}" class="img-circle">
+      <div ng-if="!data.user_img" class="initials-circle">{{data.user_initials}}</div>
+    </div>
+    <div class="user-details">
+      <span class="user-name">{{data.user_name}}</span>
+      <span class="user-role">Employee</span>
+    </div>
+  </div>
+  
+  <div class="nav-accent-line"></div>
+</nav>
+
+<div class="side-nav-spacer"></div>]]></template>
+    </sp_widget>
+</record_update>

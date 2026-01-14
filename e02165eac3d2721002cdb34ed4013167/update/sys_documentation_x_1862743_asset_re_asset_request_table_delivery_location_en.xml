@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="delivery_location" label="Delivery Location" language="en" table="x_1862743_asset_re_asset_request_table">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>delivery_location</element>
+            <help/>
+            <hint/>
+            <label>Delivery Location</label>
+            <language>en</language>
+            <name>x_1862743_asset_re_asset_request_table</name>
+            <plural>Delivery Locations</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-01-10 15:07:24</sys_created_on>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Delivery Location</sys_name>
+            <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+            <sys_update_name>sys_documentation_x_1862743_asset_re_asset_request_table_delivery_location_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-01-10 15:07:24</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

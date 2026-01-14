@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+
+    c.goToCatalog = function() {
+        window.location.href = "?id=asset_catalog";
+    };
+
+    c.goToRequest = function() {
+        window.location.href = "?id=asset_request";
+    };
+
+    c.goToMyRequests = function() {
+        window.location.href = "?id=my_requests";
+    };
+
+    c.goToDashboard = function() {
+        window.location.href = "?id=asset_dashboard";
+    };
+
+    c.goToSupport = function() {
+        window.location.href = "?id=support";
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.asset-portal {
+  font-family: "Segoe UI", Arial, sans-serif;
+  padding: 30px;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #0f4c81, #1976d2);
+  color: #fff;
+  padding: 50px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.hero-buttons {
+  margin-top: 25px;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+}
+
+.primary {
+  background-color: #ffffff;
+  color: #1976d2;
+}
+
+.secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+/* QUICK ACTIONS */
+.quick-actions {
+  margin-top: 40px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  flex: 1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>asset_request_and_tracking_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Asset Request And Tracking Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-13 10:43:56</sys_created_on>
+        <sys_id>7935c4e3c31a761002cdb34ed4013177</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Asset Request And Tracking Dashboard</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_7935c4e3c31a761002cdb34ed4013177</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-13 10:53:09</sys_updated_on>
+        <template><![CDATA[<div class="asset-portal">
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <h1>IT Asset Request & Tracking Portal</h1>
+    <p>
+      Request IT assets, track approvals, and monitor delivery — all in one place.
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn primary" ng-click="c.goToCatalog()">
+        Browse Asset Catalog
+      </button>
+
+      <button class="btn secondary" ng-click="c.goToRequest()">
+        Request New Asset
+      </button>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+
+    <div class="cards">
+      <div class="card" ng-click="c.goToMyRequests()">
+        <h3>]]>📦<![CDATA[ My Requests</h3>
+        <p>Track status of your asset requests</p>
+      </div>
+
+      <div class="card" ng-click="c.goToDashboard()">
+        <h3>]]>📊<![CDATA[ Dashboard</h3>
+        <p>View insights and reports</p>
+      </div>
+
+      <div class="card" ng-click="c.goToSupport()">
+        <h3>]]>🛠<![CDATA[ Support</h3>
+        <p>Contact IT team for help</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

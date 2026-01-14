@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="b3f2e56ec3d2721002cdb34ed401313c" label="Asset Catalog Table" max_length="40" name="x_1862743_asset_re_asset_catalog_table" type="collection">
+        <element attributes="edge_encryption_enabled=true" default="javascript:global.getNextObjNumberPadded();" label="Number" max_length="40" name="number" type="string"/>
+        <element choice="1" label="Asset Category" mandatory="true" max_length="32" name="asset_category" reference_qual="parent=d258b953c611227a0146101fb1be7c31^ORparent=2809952237b1300054b6a3549dbe5dd4^EQ" reference_qual_condition="parent=d258b953c611227a0146101fb1be7c31^ORparent=2809952237b1300054b6a3549dbe5dd4^EQ" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Keyboard" value="keyboard"/>
+                <element inactive_on_update="false" label="Laptop" value="laptop"/>
+                <element inactive_on_update="false" label="Software" value="software"/>
+                <element inactive_on_update="false" label="Mouse" value="mouse"/>
+                <element inactive_on_update="false" label="Monitor" value="monitor"/>
+            </choice>
+        </element>
+        <element attributes="edge_encryption_enabled=true" label="Asset Description" max_length="100" name="asset_description" type="html"/>
+        <element label="Available Quantity" mandatory="true" max_length="40" name="available_quantity" type="integer"/>
+        <element attributes="omit_sys_original=true" default="1" label="Unit Cost" mandatory="true" max_length="20" name="unit_cost" type="currency"/>
+        <element label="Image" max_length="65536" name="image" type="user_image"/>
+        <element attributes="edge_encryption_enabled=true" display="true" label="Asset Name" mandatory="true" max_length="40" name="asset_name" type="string"/>
+        <index name="index">
+            <element name="asset_category"/>
+        </index>
+    </element>
+</database>
