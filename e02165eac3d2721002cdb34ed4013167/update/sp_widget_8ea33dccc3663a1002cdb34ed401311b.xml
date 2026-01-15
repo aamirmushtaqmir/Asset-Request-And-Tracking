@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($window, $location, spUtil, $timeout) {
+  var c = this;
+
+  c.navigate = function(pageId) {
+    if (pageId === 'art') { $window.location.href = '/art'; } 
+    else { $window.location.href = '/art?id=' + pageId; }
+  };
+
+  c.form = {
+    quantity: 1,
+    delivery_location: '',
+    urgency: '',
+    approval_status: 'requested',
+    unit_cost: 0,
+    total_cost: 0
+  };
+
+  c.updateCost = function() {
+    var selected = c.data.assets.find(function(a) { return a.sys_id === c.form.request_asset; });
+    if (selected) {
+      c.form.unit_cost = selected.cost;
+      c.calculateTotal();
+    }
+  };
+
+  c.calculateTotal = function() {
+    c.form.total_cost = (parseFloat(c.form.unit_cost) * parseInt(c.form.quantity)).toFixed(2);
+  };
+
+  c.submitRequest = function() {
+    if (!c.form.business_justification || !c.form.delivery_date) {
+      spUtil.addErrorMessage("Please fill in Business Justification and Delivery Date.");
+      return;
+    }
+
+    c.server.get({action: 'submit', payload: c.form}).then(function(r) {
+      spUtil.addInfoMessage("Request Submitted: " + r.data.newNumber);
+      
+      // AUTO-REDIRECT after 1.5 seconds
+      $timeout(function() {
+        $window.location.href = '/art?id=track_my_request_page';
+      }, 1500);
+    });
+  };
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.asset-dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* SIDE NAV */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed; /* Keep sidebar fixed */
+  height: 100vh;
+  z-index: 10;
+}
+
+.nav-header {
+  display: flex; 
+  align-items: center; 
+  padding: 0 25px; 
+  margin-bottom: 50px;
+}
+
+.logo-box { 
+  background: #7c3aed; 
+  padding: 8px 10px; 
+  border-radius: 8px; 
+  margin-right: 12px; 
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.brand-name { font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; }
+
+.nav-links {
+  list-style: none; padding: 0 15px; flex-grow: 1;
+}
+
+.nav-links li {
+  padding: 12px 20px; 
+  margin-bottom: 8px; 
+  border-radius: 12px; 
+  display: flex; 
+  align-items: center; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  color: rgba(255,255,255,0.5);
+}
+
+.nav-links li i { margin-right: 15px; width: 20px; text-align: center; font-size: 1.1rem; }
+
+.nav-links li:hover, .nav-links li.active { 
+  background: rgba(124, 58, 237, 0.15); 
+  color: #fff; 
+}
+
+.nav-links li:hover i, .nav-links li.active i { color: #a78bfa; }
+
+.nav-footer {
+  padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.user-pill {
+  display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+}
+
+.user-init { 
+  width: 38px; height: 38px; background: linear-gradient(135deg, #4c1d95, #7c3aed); 
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+  font-weight: bold; margin-right: 12px; border: 1px solid rgba(255,255,255,0.2);
+}
+
+.u-name { font-weight: 600; font-size: 0.9rem; }
+.u-role { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+
+.accent-glow { 
+  position: absolute; right: 0; top: 0; width: 2px; height: 100%; 
+  background: linear-gradient(to bottom, transparent, #7c3aed, #ec4899, transparent); 
+}
+
+/* MAIN BODY */
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px; /* Offset for fixed sidebar */
+  padding: 50px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the form card */
+}
+
+.header-section { 
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 35px; 
+}
+
+.header-section h1 { font-weight: 700; font-size: 2.2rem; margin-bottom: 8px; }
+.header-section p { color: rgba(255,255,255,0.6); font-size: 1rem; }
+
+/* FORM CARD */
+.glass-card {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 45px; /* Reduced from 80px for better proportion */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.form-row {
+  display: grid; gap: 24px; margin-bottom: 24px;
+}
+.form-row.two-col { grid-template-columns: 1fr 1fr; }
+.form-row.three-col { grid-template-columns: 1fr 1fr 1fr; }
+.form-row.full { grid-template-columns: 1fr; }
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 15px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.input-wrapper .themed-input {
+  padding-left: 35px !important;
+}
+
+.themed-input {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  height: 48px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+textarea.themed-input {
+  height: auto;
+  resize: vertical;
+}
+
+.themed-input:focus {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2) !important;
+  outline: none;
+}
+
+.themed-input[readonly] {
+  background: rgba(255, 255, 255, 0.03) !important;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.highlight { color: #34d399 !important; font-weight: 700; font-size: 1.1rem; }
+.status-locked { color: #a78bfa !important; font-weight: 600; text-transform: capitalize; }
+
+/* ACTION BUTTON */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.btn-submit {
+  background: linear-gradient(90deg, #7c3aed, #ec4899);
+  color: #fff; 
+  border: none; 
+  padding: 14px 35px; 
+  border-radius: 14px;
+  font-weight: 700; 
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+.btn-submit i { font-size: 0.9rem; }
+
+.btn-submit:hover { 
+  transform: translateY(-3px) scale(1.02); 
+  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.5); 
+}
+
+.btn-submit:active { transform: translateY(0); }
+
+/* Custom Scrollbar for Textarea */
+.themed-input::-webkit-scrollbar { width: 6px; }
+.themed-input::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>asset_request_form</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Asset Request Form</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  var user = gs.getUser();
+  data.user_first_name = user.getFirstName();
+  data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
+  data.project_name = "IT Asset Management";
+
+  data.assets = [];
+  var grAsset = new GlideRecord('x_1862743_asset_re_asset_catalog_table');
+  grAsset.addActiveQuery();
+  grAsset.query();
+  while (grAsset.next()) {
+    data.assets.push({
+      name: grAsset.getDisplayValue('asset_name'),
+      sys_id: grAsset.getUniqueValue(),
+      cost: grAsset.getValue('unit_cost')
+    });
+  }
+
+  if (input && input.action == 'submit') {
+    var newReq = new GlideRecord('x_1862743_asset_re_asset_request_table');
+    newReq.initialize();
+    newReq.setValue('request_asset', input.payload.request_asset);
+    newReq.setValue('quantity', input.payload.quantity);
+    newReq.setValue('unit_cost', input.payload.unit_cost);
+    newReq.setValue('total_cost', input.payload.total_cost);
+    newReq.setValue('delivery_location', input.payload.delivery_location);
+    newReq.setValue('urgency', input.payload.urgency);
+    newReq.setValue('delivery_date', input.payload.delivery_date);
+    newReq.setValue('business_justification', input.payload.business_justification);
+    newReq.setValue('approval_status', 'requested'); // Submits to Approval queue
+    
+    var sysID = newReq.insert();
+    data.newNumber = newReq.getDisplayValue('number');
+  }
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-15 08:03:25</sys_created_on>
+        <sys_id>8ea33dccc3663a1002cdb34ed401311b</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_name>Asset Request Form</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_8ea33dccc3663a1002cdb34ed401311b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-15 09:47:46</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
+    </div>
+
+    <ul class="nav-links">
+      <li ng-class="{'active': c.currentPage == 'dashboard'}" ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li class="active" ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
+      </li>
+       <li ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics_page')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-glow"></div>
+  </aside>
+
+  <main class="main-body">
+    <div class="header-section">
+      <h1>Submit Asset Request</h1>
+      <p>Provide details below. You will be redirected to tracking upon submission.</p>
+    </div>
+
+    <div class="glass-card form-layout">
+      <div class="form-row full">
+        <div class="field-group">
+          <label>Request Asset</label>
+          <select class="form-control themed-input" ng-model="c.form.request_asset" ng-change="c.updateCost()">
+            <option value="">-- Select Asset --</option>
+            <option ng-repeat="a in data.assets" value="{{a.sys_id}}">{{a.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="field-group">
+          <label>Delivery Location</label>
+          <select class="form-control themed-input" ng-model="c.form.delivery_location">
+            <option value="">-- None --</option>
+            <option value="brazil">Brazil</option>
+            <option value="california">California</option>
+            <option value="india">India</option>
+            <option value="japan">Japan</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Urgency</label>
+          <select class="form-control themed-input" ng-model="c.form.urgency">
+            <option value="">-- None --</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row three-col">
+        <div class="field-group">
+          <label>Unit Cost</label>
+          <div class="input-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="text" class="form-control themed-input" ng-model="c.form.unit_cost" readonly>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Quantity</label>
+          <input type="number" class="form-control themed-input" ng-model="c.form.quantity" min="1" ng-change="c.calculateTotal()">
+        </div>
+        <div class="field-group">
+          <label>Total Cost</label>
+          <div class="input-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="text" class="form-control themed-input highlight" ng-model="c.form.total_cost" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="field-group">
+          <label>Delivery Date *</label>
+          <input type="date" class="form-control themed-input" ng-model="c.form.delivery_date">
+        </div>
+        <div class="field-group">
+          <label>Approval Status</label>
+          <input type="text" class="form-control themed-input status-locked" ng-model="c.form.approval_status" readonly>
+        </div>
+      </div>
+
+      <div class="form-row full">
+        <div class="field-group">
+          <label>Business Justification *</label>
+          <textarea class="form-control themed-input" ng-model="c.form.business_justification" rows="3" placeholder="Explain why this asset is required..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit" ng-click="c.submitRequest()">
+          <i class="fa fa-paper-plane"></i> Submit Request
+        </button>
+      </div>
+    </div>
+  </main>
+</div>]]></template>
+    </sp_widget>
+</record_update>

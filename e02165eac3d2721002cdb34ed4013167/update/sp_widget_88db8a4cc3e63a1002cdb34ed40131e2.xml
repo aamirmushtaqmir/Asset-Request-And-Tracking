@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function ($location) {
+    var c = this;
+
+    // Navigate to a page without parameters
+    c.navigate = function (pageId) {
+        $location.search({
+            id: pageId
+        });
+    };
+
+    // Open details page with sys_id
+    c.viewDetails = function (sysId) {
+        if (!sysId) {
+            return;
+        }
+
+        $location.search({
+            id: 'view_tracking_details_form_page',
+            sys_id: sysId
+        });
+    };
+
+    // Go back to tracking page and clear sys_id
+    c.goBack = function () {
+        $location.search({
+            id: 'track_my_request_page'
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.asset-dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* SIDEBAR STYLES (Keep existing sidebar code here) */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed; /* Keep it locked on the left */
+  height: 100vh;
+  
+  .nav-header {
+    display: flex; align-items: center; padding: 0 25px; margin-bottom: 50px;
+    .logo-box { background: #7c3aed; padding: 8px 10px; border-radius: 8px; margin-right: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+  }
+  .nav-links {
+    list-style: none; padding: 0 15px; flex-grow: 1;
+    li {
+      padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.6);
+      i { margin-right: 15px; width: 20px; text-align: center; }
+      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+    }
+  }
+  .nav-footer {
+    padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+    .user-pill {
+      display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+      .user-init { width: 35px; height: 35px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+      .u-name { font-size: 0.9rem; font-weight: 600; }
+    }
+  }
+  .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
+}
+
+.nav-links li.active { background: rgba(124, 58, 237, 0.15); color: #fff; }
+
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px;
+  padding: 50px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.glass-card {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 45px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.form-row { display: grid; gap: 24px; margin-bottom: 24px; }
+.form-row.two-col { grid-template-columns: 1fr 1fr; }
+.form-row.three-col { grid-template-columns: 1fr 1fr 1fr; }
+.form-row.full { grid-template-columns: 1fr; }
+
+.themed-input {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  width: 100%;
+}
+
+.highlight { color: #34d399 !important; font-weight: 700; }
+.status-locked { color: #a78bfa !important; font-weight: 600; }
+
+.btn-submit {
+  background: linear-gradient(90deg, #7c3aed, #ec4899);
+  color: #fff; border: none; padding: 14px 35px; border-radius: 14px;
+  cursor: pointer; font-weight: 700;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>view_tracking_details_form</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>View Tracking Details Form</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    data.details = {};
+
+    // 1. Read sys_id from URL
+    var requestSysId = $sp.getParameter('sys_id');
+
+    if (!requestSysId) {
+        data.details.number = "No Sys_ID Provided";
+        data.details.asset = "Select a record from Tracking";
+        return;
+    }
+
+    // 2. Query the Asset Request Table
+    var gr = new GlideRecord('x_1862743_asset_re_asset_request_table');
+    if (gr.get(requestSysId)) {
+        
+        // ]]>🔹<![CDATA[ Dot-walking: request_asset.unit_cost 
+        // This goes from the Request table -> Catalog table -> Unit Cost field
+        var unitCostValue = gr.request_asset.unit_cost.getDisplayValue();
+
+        data.details = {
+            number: gr.getDisplayValue('number'),
+            asset: gr.getDisplayValue('request_asset'),
+            location: gr.getDisplayValue('delivery_location'),
+            urgency: gr.getDisplayValue('urgency'),
+            
+            // Fixed Unit Cost via Dot-Walking
+            unit_cost: unitCostValue, 
+            
+            quantity: gr.getValue('quantity'),
+            total_cost: gr.getDisplayValue('total_cost'),
+
+            // Ensure this field name matches your table (delivery_date vs expected_delivery)
+            delivery_date: gr.getDisplayValue('delivery_date') || gr.getDisplayValue('expected_delivery'),
+            
+            status: gr.getDisplayValue('approval_status'),
+            justification: gr.getValue('business_justification')
+        };
+    } else {
+        data.details.number = "Invalid Request";
+    }
+
+    data.project_name = "IT Asset Management";
+    data.user_first_name = gs.getUser().getFirstName() || "Admin";
+    data.user_initials = data.user_first_name.charAt(0);
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-15 09:48:58</sys_created_on>
+        <sys_id>88db8a4cc3e63a1002cdb34ed40131e2</sys_id>
+        <sys_mod_count>15</sys_mod_count>
+        <sys_name>View Tracking Details Form</sys_name>
+        <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
+        <sys_update_name>sp_widget_88db8a4cc3e63a1002cdb34ed40131e2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-15 11:44:56</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
+    </div>
+
+    <ul class="nav-links">
+      <li ng-class="{'active': c.currentPage == 'dashboard'}" ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li class="active" ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
+      </li>
+       <li ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics_page')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-glow"></div>
+  </aside>
+
+  <main class="main-body">
+    <div class="header-section">
+      <h1>Request Details: {{data.details.number}}</h1>
+      <p>Monitoring the progress of your asset order.</p>
+    </div>
+
+    <div class="glass-card form-layout">
+      <div class="form-row full">
+        <div class="field-group">
+          <label>Requested Asset</label>
+          <input type="text" class="themed-input" ng-value="data.details.asset" readonly>
+        </div>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="field-group">
+          <label>Delivery Location</label>
+          <input type="text" class="themed-input" ng-value="data.details.location" readonly>
+        </div>
+        <div class="field-group">
+          <label>Urgency</label>
+          <input type="text" class="themed-input" ng-value="data.details.urgency" readonly>
+        </div>
+      </div>
+
+      <div class="form-row three-col">
+        <div class="field-group">
+          <label>Unit Cost</label>
+          <div class="input-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="text" class="themed-input" ng-value="data.details.unit_cost" readonly>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Quantity</label>
+          <input type="text" class="themed-input" ng-value="data.details.quantity" readonly>
+        </div>
+        <div class="field-group">
+          <label>Total Cost</label>
+          <div class="input-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="text" class="themed-input highlight" ng-value="data.details.total_cost" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="field-group">
+          <label>Expected Delivery</label>
+          <input type="text" class="themed-input" ng-value="data.details.delivery_date" readonly>
+        </div>
+        <div class="field-group">
+          <label>Approval Status</label>
+          <input type="text" class="themed-input status-locked" ng-value="data.details.status" readonly>
+        </div>
+      </div>
+
+      <div class="form-row full">
+        <div class="field-group">
+          <label>Business Justification</label>
+          <textarea class="themed-input" rows="3" readonly>{{data.details.justification}}</textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit" ng-click="c.goBack()">
+          <i class="fa fa-arrow-left"></i> Back to Tracking
+        </button>
+      </div>
+    </div>
+  </main>
+</div>]]></template>
+    </sp_widget>
+</record_update>

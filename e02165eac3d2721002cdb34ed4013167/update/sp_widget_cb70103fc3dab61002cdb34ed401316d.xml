@@ -29,7 +29,6 @@
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* SIDEBAR (Consistent with portal) */
 .side-nav {
   width: 260px;
   background: rgba(0, 0, 0, 0.2);
@@ -66,7 +65,6 @@
   .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
 }
 
-/* CONTENT AREA */
 .main-body {
   flex-grow: 1;
   margin-left: 260px;
@@ -165,18 +163,20 @@
     data.assets = [];
     var userId = gs.getUserID();
     
-    // Change this to your actual inventory table name
-    // Standard ServiceNow uses 'alm_asset' or 'alm_hardware'
+    // The standard ServiceNow table for hardware inventory
     var assetTable = 'alm_hardware'; 
 
     var gr = new GlideRecord(assetTable);
+    // ESSENTIAL: Filter by the logged-in user's Sys ID
     gr.addQuery('assigned_to', userId); 
-    gr.addQuery('install_status', '1'); // Typically '1' means 'In Use'
+    // Filter by Install Status: '1' is typically the value for 'In Use'
+    gr.addQuery('install_status', '1'); 
     gr.orderByDesc('assigned');
     gr.query();
 
     while (gr.next()) {
         var obj = {};
+        // Fetch values specifically for assigned hardware
         obj.tag = gr.getValue('asset_tag');
         obj.model = gr.model.getDisplayValue();
         obj.serial = gr.getValue('serial_number');
@@ -192,14 +192,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 06:11:39</sys_created_on>
         <sys_id>cb70103fc3dab61002cdb34ed401316d</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>My Assigned Inventory</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_cb70103fc3dab61002cdb34ed401316d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-14 11:33:56</sys_updated_on>
+        <sys_updated_on>2026-01-15 07:39:47</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
   
   <aside class="side-nav">
@@ -218,10 +218,13 @@
       <li ng-click="c.navigate('track_my_request_page')">
         <i class="fa fa-search"></i> <span>Track Requests</span>
       </li>
-      <li class="active" ng-click="c.navigate('my_assets_page')">
-        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      <li class="active" ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
       </li>
-      <li ng-click="c.navigate('executive_analytics')">
+       <li ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics_page')">
         <i class="fa fa-bar-chart"></i> <span>Analytics</span>
       </li>
     </ul>

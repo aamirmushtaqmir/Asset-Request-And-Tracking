@@ -1,76 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {
-  /* widget controller */
+        <client_script><![CDATA[api.controller = function($window, $location) {
   var c = this;
-};    ]]></client_script>
+ 
+  // Set the current page based on the URL to handle the 'active' class
+  c.currentPage = $location.search().id || 'dashboard';
+ 
+  c.navigate = function(pageId) {
+    // If the target is 'art', navigate to the portal root
+    if (pageId === 'art') {
+      $window.location.href = '/art';
+    } else {
+      // Otherwise, navigate to the specific page ID within the portal
+      $window.location.href = '/art?id=' + pageId;
+    }
+  };
+};]]></client_script>
         <controller_as>c</controller_as>
-        <css>/* Use the exact Purple Theme */
-.glass-container {
-  background: linear-gradient(135deg, #1a0b2e 0%, #4c1d95 100%);
+        <css>/* ROOT STRUCTURE */
+.asset-dashboard-root {
+  display: flex;
   min-height: 100vh;
-  padding: 20px 0 60px 0;
-  color: white;
-  overflow-x: hidden; /* Hard stop for any horizontal floating */
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  overflow-x: hidden;
 }
 
-.top-spacer { height: 40px; }
-
-/* The fix for 'touching the edges' */
-.container {
-  max-width: 1140px;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+/* FIXED SIDEBAR (Maintained consistency) */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+  .nav-header { display: flex; align-items: center; padding: 0 25px; margin-bottom: 50px; 
+    .logo-box { background: #7c3aed; padding: 8px 10px; border-radius: 8px; margin-right: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+  }
+  .nav-links { list-style: none; padding: 0 15px; flex-grow: 1; 
+    li { padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; color: rgba(255,255,255,0.6); margin-bottom: 8px;
+      i { margin-right: 15px; width: 20px; text-align: center; }
+      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+    }
+  }
+  .nav-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); 
+    .user-pill { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+      .user-init { width: 35px; height: 35px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+    }
+  }
+  .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
 }
 
+/* MAIN BODY OFFSET */
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px; /* IMPORTANT: Keeps content from touching the side-nav */
+  padding: 60px 80px;
+  .header-section { margin-bottom: 40px; h1 { font-weight: 700; font-size: 2.5rem; } p { opacity: 0.6; } }
+}
+
+/* ANALYTICS UI */
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 30px;
-  height: 100%;
-  box-sizing: border-box; /* Prevents padding from increasing width */
 }
 
-/* Restoring the Status Distribution Line */
-.chart-section h3 {
-  margin-bottom: 25px;
-  font-size: 1.5rem;
+.analytics-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 40px;
+  .h-label { font-size: 0.75rem; text-transform: uppercase; opacity: 0.5; letter-spacing: 1px; }
+  .h-value { font-size: 2.2rem; font-weight: 700; margin: 10px 0; }
+  .h-sub { font-size: 0.8rem; font-weight: 600; }
 }
 
-.progress-track {
-  background: rgba(255, 255, 255, 0.1); /* The background 'line' track */
-  height: 12px;
-  border-radius: 10px;
-  margin-top: 10px;
-  overflow: hidden;
-  display: block; /* Ensures visibility */
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.chart-container h3 { margin-bottom: 25px; font-size: 1.2rem; }
+
+/* BAR CHART STYLING */
+.bar-row { margin-bottom: 20px;
+  .bar-meta { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+  .count-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
 }
 
-.progress-fill {
-  /* Re-introducing the purple-pink gradient */
-  background: linear-gradient(90deg, #7c3aed 0%, #ec4899 100%);
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.8s ease-in-out;
-}
+.progress-track { background: rgba(255, 255, 255, 0.1); height: 10px; border-radius: 10px; overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, #7c3aed 0%, #ec4899 100%); height: 100%; border-radius: 10px; transition: width 0.8s ease-in-out; }
 
-.count-badge {
-  background: rgba(255,255,255,0.1);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
+.line-chart-svg { width: 100%; height: 150px; }
+.chart-legend { display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.4; }
 
-/* Icon Colors from Dashboard */
-.yellow { color: #fbbf24; }
-.purple { color: #a78bfa; }
-.green { color: #34d399; }</css>
+.text-green { color: #34d399; }
+.text-yellow { color: #fbbf24; }
+.text-purple { color: #a78bfa; }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -85,25 +117,29 @@
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
+    var user = gs.getUser();
+    data.user_first_name = user.getFirstName();
+    data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
+    data.project_name = "IT Asset Management";
+
     data.stats = {
         total_requests: 0,
         total_cost: 0,
-        top_asset: "",
-        pending_count: 0
+        top_asset: "None"
     };
     data.chartData = [];
     var table = 'x_1862743_asset_re_asset_request_table';
 
-    // 1. Get Total Requests & Sum of Costs
+    // 1. Get Total Requests & Sum of Costs (Pulling 'unit_cost' field)
     var ga = new GlideAggregate(table);
     ga.addAggregate('COUNT');
-    ga.addAggregate('SUM', 'total_cost');
-    ga.addQuery('approval', 'approved'); // Only count realized costs
+    ga.addAggregate('SUM', 'unit_cost'); 
     ga.setGroup(false);
     ga.query();
     if (ga.next()) {
-        data.stats.total_requests = ga.getAggregate('COUNT');
-        data.stats.total_cost = ga.getAggregate('SUM', 'total_cost') || 0;
+        data.stats.total_requests = parseInt(ga.getAggregate('COUNT')) || 0;
+        var rawCost = ga.getAggregate('SUM', 'unit_cost') || 0;
+        data.stats.total_cost = parseFloat(rawCost).toLocaleString('en-GB', {minimumFractionDigits: 2});
     }
 
     // 2. Get Top Requested Asset
@@ -115,31 +151,39 @@
         data.stats.top_asset = topAsset.request_asset.getDisplayValue();
     }
 
-    // 3. Prepare Chart Data (Requests by State)
+    // 3. Prepare Chart Data (Requests by Approval Status)
     var stateCount = new GlideAggregate(table);
-    stateCount.addAggregate('COUNT', 'approval');
-    stateCount.groupBy('approval');
+    stateCount.addAggregate('COUNT', 'approval_status');
+    stateCount.groupBy('approval_status');
     stateCount.query();
     while (stateCount.next()) {
         data.chartData.push({
-            label: stateCount.approval.getDisplayValue() || 'Unknown',
-            value: stateCount.getAggregate('COUNT', 'approval')
+            label: stateCount.approval_status.getDisplayValue() || 'Pending',
+            value: parseInt(stateCount.getAggregate('COUNT', 'approval_status'))
         });
     }
+
+    // 4. Calculate Success Rate Percentage
+    var approvedCount = 0;
+    data.chartData.forEach(function(item) {
+        if(item.label.toLowerCase() == 'approved') approvedCount = item.value;
+    });
+    data.success_rate = (data.stats.total_requests > 0) ? Math.round((approvedCount / data.stats.total_requests) * 100) : 0;
+
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 06:01:31</sys_created_on>
         <sys_id>622e04bbc3dab61002cdb34ed4013123</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>Executive Analytics</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_622e04bbc3dab61002cdb34ed4013123</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-14 12:00:21</sys_updated_on>
+        <sys_updated_on>2026-01-15 07:44:47</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
   
   <aside class="side-nav">
@@ -158,10 +202,13 @@
       <li ng-click="c.navigate('track_my_request_page')">
         <i class="fa fa-search"></i> <span>Track Requests</span>
       </li>
-      <li ng-click="c.navigate('my_assets_page')">
-        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
       </li>
-      <li class="active" ng-click="c.navigate('executive_analytics')">
+      <li ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li class="active" ng-click="c.navigate('executive_analytics_page')">
         <i class="fa fa-bar-chart"></i> <span>Analytics</span>
       </li>
     </ul>
@@ -187,37 +234,39 @@
     <div class="analytics-highlights">
       <div class="glass-card highlight-box">
         <span class="h-label">Total Inventory Value</span>
-        <h2 class="h-value">£{{data.total_cost}}</h2>
-        <span class="h-sub text-green"><i class="fa fa-arrow-up"></i> 12% vs last month</span>
+        <h2 class="h-value">£{{data.stats.total_cost}}</h2>
+        <span class="h-sub text-green"><i class="fa fa-arrow-up"></i> Top Asset: {{data.stats.top_asset}}</span>
       </div>
       <div class="glass-card highlight-box">
-        <span class="h-label">Active Requests</span>
-        <h2 class="h-value">{{data.active_requests}}</h2>
-        <span class="h-sub text-yellow">Requires attention</span>
+        <span class="h-label">Total Requests</span>
+        <h2 class="h-value">{{data.stats.total_requests}}</h2>
+        <span class="h-sub text-yellow">Lifetime submitted requests</span>
       </div>
       <div class="glass-card highlight-box">
-        <span class="h-label">Utilization Rate</span>
-        <h2 class="h-value">{{data.utilization}}%</h2>
-        <span class="h-sub text-purple">Assets currently assigned</span>
+        <span class="h-label">Success Rate</span>
+        <h2 class="h-value">{{data.success_rate}}%</h2>
+        <span class="h-sub text-purple">Approved vs. Submissions</span>
       </div>
     </div>
 
     <div class="analytics-grid">
       <div class="glass-card chart-container">
-        <h3>Asset Distribution by Category</h3>
-        <div class="chart-placeholder">
-          <div class="bar-row" ng-repeat="cat in data.cat_stats">
-            <div class="bar-label">{{cat.label}}</div>
-            <div class="bar-outer">
-              <div class="bar-inner" ng-style="{'width': cat.percent + '%'}"></div>
+        <h3>Request Status Distribution</h3>
+        <div class="chart-content">
+          <div class="bar-row" ng-repeat="item in data.chartData">
+            <div class="bar-meta">
+              <span class="bar-label">{{item.label}}</span>
+              <span class="count-badge">{{item.value}}</span>
             </div>
-            <div class="bar-value">{{cat.count}}</div>
+            <div class="progress-track">
+              <div class="progress-fill" ng-style="{'width': ((item.value / data.stats.total_requests) * 100) + '%'}"></div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="glass-card chart-container">
-        <h3>Request Volume (Last 6 Months)</h3>
+        <h3>Request Volume Trend</h3>
         <div class="chart-visual">
           <svg viewBox="0 0 400 150" class="line-chart-svg">
             <path d="M0,120 Q50,110 100,130 T200,80 T300,90 T400,40" fill="none" stroke="#7c3aed" stroke-width="3" />

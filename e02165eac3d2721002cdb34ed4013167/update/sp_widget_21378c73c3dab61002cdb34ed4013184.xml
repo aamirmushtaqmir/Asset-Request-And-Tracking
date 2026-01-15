@@ -3,10 +3,10 @@
         <category>custom</category>
         <client_script><![CDATA[api.controller = function($window, $location) {
   var c = this;
-
+ 
   // Set the current page based on the URL to handle the 'active' class
   c.currentPage = $location.search().id || 'dashboard';
-
+ 
   c.navigate = function(pageId) {
     // If the target is 'art', navigate to the portal root
     if (pageId === 'art') {
@@ -27,7 +27,7 @@
   color: #fff;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
-
+ 
 /* SIDEBAR STYLES (Keep existing sidebar code here) */
 .side-nav {
   width: 260px;
@@ -48,7 +48,7 @@
     li {
       padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.6);
       i { margin-right: 15px; width: 20px; text-align: center; }
-      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+&amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
     }
   }
   .nav-footer {
@@ -60,7 +60,7 @@
   }
   .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
 }
-
+ 
 /* MAIN BODY */
 .main-body {
   flex-grow: 1; padding: 40px 60px; overflow-y: auto;
@@ -70,7 +70,7 @@
     .project-description { color: rgba(255,255,255,0.6); font-size: 1.1rem; max-width: 800px; line-height: 1.6; }
   }
 }
-
+ 
 /* SHARED GLASS CARDS */
 .glass-card {
   background: rgba(255, 255, 255, 0.04);
@@ -79,7 +79,7 @@
   border-radius: 20px;
   padding: 30px;
 }
-
+ 
 /* STAT CARDS (Row 1) */
 .stats-row {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px;
@@ -90,53 +90,53 @@
     .lbl { opacity: 0.6; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
   }
 }
-
+ 
 /* ACTION GRID (Row 2) */
 .action-grid {
   display: grid; grid-template-columns: 2fr 1fr; gap: 25px;
   .left-col { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 }
-
+ 
 /* VIBRANT CLICKABLE CARDS STYLING */
 .big-action {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; min-height: 220px; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative; overflow: hidden;
-
+ 
   .action-icon-wrap {
     width: 60px; height: 60px; border-radius: 15px; background: rgba(255,255,255,0.1);
     display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 20px;
   }
   h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; }
   .action-subtext { font-size: 0.85rem; opacity: 0.6; }
-
+ 
   &amp;:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.3);
     .action-icon-wrap { background: #fff; color: #1a0b2e; }
   }
 }
-
+ 
 /* Color Variation 1: Request Card (Deep Purple/Violet Tint) */
 .request-card {
   background: linear-gradient(145deg, rgba(124, 58, 237, 0.3), rgba(124, 58, 237, 0.1));
   border: 1px solid rgba(167, 139, 250, 0.3);
-  &amp;:hover {
+&amp;:hover {
     background: linear-gradient(145deg, rgba(124, 58, 237, 0.5), rgba(124, 58, 237, 0.2));
     border: 1px solid rgba(167, 139, 250, 0.6);
   }
 }
-
+ 
 /* Color Variation 2: Track Card (Indigo/Blue Tint) */
 .track-card {
   background: linear-gradient(145deg, rgba(79, 70, 229, 0.3), rgba(79, 70, 229, 0.1));
   border: 1px solid rgba(129, 140, 248, 0.3);
-  &amp;:hover {
+&amp;:hover {
     background: linear-gradient(145deg, rgba(79, 70, 229, 0.5), rgba(79, 70, 229, 0.2));
     border: 1px solid rgba(129, 140, 248, 0.6);
   }
 }
-
+ 
 /* CHART CARD */
 .chart-card {
   text-align: center;
@@ -146,7 +146,7 @@
     .inner-circle { font-size: 1.8rem; font-weight: 700; }
   }
 }
-
+ 
 /* SHARED COLORS */
 .yellow { color: #fbbf24; }
 .green { color: #34d399; }
@@ -168,10 +168,9 @@
     var user = gs.getUser();
     data.user_first_name = user.getFirstName();
     data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
-    
     var userId = gs.getUserID();
     var requestTable = 'x_1862743_asset_re_asset_request_table';
-
+ 
     function getCount(query) {
         var gr = new GlideAggregate(requestTable);
         // We use 'opened_by' because it's inherited from the Task table
@@ -181,17 +180,16 @@
         if (gr.next()) return parseInt(gr.getAggregate('COUNT'));
         return 0;
     }
-
+ 
     data.stats = {
         // Internal values for Task-based approval are usually lowercase
         pending: getCount('approval_status=requested'), 
         approved: getCount('approval_status=approved'),  
         rejected: getCount('approval_status=rejected')   
     };
-
+ 
     var total = data.stats.approved + data.stats.rejected + data.stats.pending;
     data.success_rate = (total > 0) ? Math.round((data.stats.approved / total) * 100) : 0;
-    
     data.project_name = "IT Asset Management";
     data.project_desc = "A centralized hub for real-time hardware tracking, automated approvals, and lifecycle management.";
 })();]]></script>
@@ -200,14 +198,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 05:31:08</sys_created_on>
         <sys_id>21378c73c3dab61002cdb34ed4013184</sys_id>
-        <sys_mod_count>23</sys_mod_count>
+        <sys_mod_count>46</sys_mod_count>
         <sys_name>Asset Dashboard</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_21378c73c3dab61002cdb34ed4013184</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-14 10:55:17</sys_updated_on>
+        <sys_updated_on>2026-01-15 11:49:36</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
 
   <aside class="side-nav">
@@ -217,7 +215,7 @@
     </div>
 
     <ul class="nav-links">
-      <li ng-class="{'active': c.currentPage == 'dashboard'}" ng-click="c.navigate('art')">
+      <li class="active" ng-class="{'active': c.currentPage == 'dashboard'}" ng-click="c.navigate('art')">
         <i class="fa fa-th-large"></i> <span>Dashboard</span>
       </li>
       <li ng-click="c.navigate('browse_and_request_page')">
@@ -226,10 +224,13 @@
       <li ng-click="c.navigate('track_my_request_page')">
         <i class="fa fa-search"></i> <span>Track Requests</span>
       </li>
-      <li ng-click="c.navigate('my_assets_page')">
-        <i class="fa fa-laptop"></i> <span>My Assets</span>
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
       </li>
-      <li ng-click="c.navigate('executive_analytics')">
+       <li ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics_page')">
         <i class="fa fa-bar-chart"></i> <span>Analytics</span>
       </li>
     </ul>
@@ -268,7 +269,6 @@
         <div class="val">{{data.stats.rejected}}</div> <div class="lbl">Rejected</div>
       </div>
     </div>
-
 
 
     <div class="action-grid">

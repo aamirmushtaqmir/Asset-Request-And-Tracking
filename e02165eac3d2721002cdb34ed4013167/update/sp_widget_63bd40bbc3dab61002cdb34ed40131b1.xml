@@ -1,91 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function() {
+        <client_script><![CDATA[api.controller = function($window, $location, spUtil, $scope) {
   var c = this;
+  c.filterStatus = 'requested'; 
 
-  c.action = function(state, id) {
-    c.server.get({
-      action: state,
-      sys_id: id
-    }).then(function(response) {
-      c.data.approvals = response.data.approvals;
-      alert("Request " + state + " successfully!");
+  c.navigate = function(pageId) {
+    if (pageId === 'art') {
+      $window.location.href = '/art';
+    } else {
+      $window.location.href = '/art?id=' + pageId;
+    }
+  };
+
+  c.setFilter = function(status) {
+    c.filterStatus = status;
+  };
+
+  c.updateStatus = function(newStatus, requestID) {
+    c.data.action = 'update_approval';
+    c.data.target_id = requestID;
+    c.data.target_status = newStatus;
+    
+    c.server.update().then(function(response) {
+      // Find the index of the item in the local array
+      var index = c.data.approvals.findIndex(function(item) {
+        return item.sys_id === requestID;
+      });
+      
+      // Update the status locally so it moves to the correct tab immediately
+      if (index !== -1) {
+        c.data.approvals[index].approval = newStatus;
+      }
+      
+      spUtil.addInfoMessage("Request " + newStatus.toUpperCase());
     });
   };
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css>.glass-container {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); /* Slightly darker for Admin */
+        <css>/* ROOT STRUCTURE */
+.asset-dashboard-root {
+  display: flex;
   min-height: 100vh;
-  padding: 40px 20px;
-  color: white;
+  width: 100%;
+  background: linear-gradient(135deg, #1a0b2e 0%, #31135e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden; /* Fixes overflow */
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 20px;
-}
-
-.req-content {
+/* SIDEBAR (Same as Dashboard) */
+.side-nav {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 30px 0;
+  position: fixed; /* Keep locked on side */
+  height: 100vh;
+  z-index: 100;
+  
+  .nav-header { display: flex; align-items: center; padding: 0 25px; margin-bottom: 50px; 
+    .logo-box { background: #7c3aed; padding: 8px 10px; border-radius: 8px; margin-right: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+  }
+  .nav-links { list-style: none; padding: 0 15px; flex-grow: 1; 
+    li { padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.6); margin-bottom: 8px;
+      i { margin-right: 15px; width: 20px; text-align: center; }
+      &amp;:hover, &amp;.active { background: rgba(124, 58, 237, 0.2); color: #fff; i { color: #a78bfa; } }
+    }
+  }
+  .nav-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); 
+    .user-pill { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;
+      .user-init { width: 35px; height: 35px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+    }
+  }
+  .accent-glow { position: absolute; right: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, #7c3aed, #ec4899); }
 }
 
-.user-info {
-  display: flex;
-  gap: 20px;
-  align-items: center;
+/* MAIN BODY: ALIGNMENT &amp; SPACING */
+.main-body {
+  flex-grow: 1;
+  margin-left: 260px; /* Essential to prevent overlap with sidebar */
+  padding: 60px 80px;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  .header-section { margin-bottom: 40px; h1 { font-weight: 700; font-size: 2.5rem; } p { opacity: 0.6; } }
 }
 
-.avatar-circle {
-  width: 50px;
-  height: 50px;
-  background: #7c3aed;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
+/* FILTER PILLS */
+.filter-bar { margin-top: 30px; 
+  .pill { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 10px 25px; border-radius: 50px; margin-right: 10px; transition: 0.3s;
+    &amp;:hover, &amp;.active { background: #7c3aed; box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+  }
 }
 
-.action-buttons {
-  display: flex;
-  gap: 10px;
+/* GLASS CARDS */
+.glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; margin-bottom: 25px; }
+
+.req-content { display: flex; justify-content: space-between; align-items: center; gap: 30px; flex-wrap: nowrap; }
+
+.user-profile-section { display: flex; align-items: center; gap: 20px; flex-shrink: 0;
+  .avatar-circle { width: 50px; height: 50px; background: #4c1d95; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid #7c3aed; }
+  .req-number { color: #a78bfa; font-weight: 700; font-size: 0.8rem; }
+  h3 { font-size: 1.3rem; margin: 4px 0; small { opacity: 0.5; } }
 }
 
-.btn-approve {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  &amp;:hover { background: #059669; }
+.req-data-summary { display: flex; gap: 40px; 
+  .data-point { text-align: center; label { display: block; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; } span { font-weight: 700; font-size: 1.1rem; } }
 }
 
-.btn-reject {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  &amp;:hover { background: #dc2626; }
-}</css>
+.action-buttons { display: flex; gap: 12px; flex-shrink: 0;
+  button { padding: 12px 25px; border-radius: 12px; font-weight: 700; border: none; transition: 0.3s; &amp;:hover { transform: scale(1.05); } }
+  .btn-approve { background: #34d399; color: #064e3b; }
+  .btn-reject { background: #f87171; color: #7f1d1d; }
+}
+
+.status-badge { padding: 8px 18px; border-radius: 30px; font-weight: 700; text-transform: uppercase; font-size: 0.7rem;
+  &amp;.status-approved { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  &amp;.status-rejected { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+}
+
+.no-data { padding: 80px; opacity: 0.7; }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
         <docs/>
         <field_list/>
-        <has_preview>false</has_preview>
+        <has_preview>true</has_preview>
         <id>admin_approval</id>
         <internal>false</internal>
         <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
@@ -94,35 +139,44 @@
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
-    data.approvals = [];
-    var table = 'x_1862743_asset_re_asset_request_table';
+    var user = gs.getUser();
+    data.user_first_name = user.getFirstName();
+    data.user_initials = (user.getFirstName().charAt(0) + user.getLastName().charAt(0)).toUpperCase();
+    data.project_name = "IT Asset Management";
+    
+    var requestTable = 'x_1862743_asset_re_asset_request_table';
 
-    // 1. Handle the Approval/Rejection action from the client
-    if (input && input.action) {
-        var ar = new GlideRecord(table);
-        if (ar.get(input.sys_id)) {
-            ar.approval = input.action; // 'approved' or 'rejected'
-            ar.state = (input.action == 'approved') ? '3' : '4'; // Closed Complete or Closed Incomplete
-            ar.update();
+    // HANDLE APPROVAL ACTIONS
+    if (input && input.action == 'update_approval') {
+        var grUpdate = new GlideRecord(requestTable);
+        if (grUpdate.get(input.target_id)) {
+            grUpdate.setValue('approval_status', input.target_status);
+            grUpdate.update();
         }
     }
 
-    // 2. Fetch all pending requests
-    var gr = new GlideRecord(table);
-    gr.addQuery('approval', 'requested'); 
+    // FETCH ALL REQUESTS FOR ADMIN VIEW
+    data.approvals = [];
+    var gr = new GlideRecord(requestTable);
     gr.orderByDesc('sys_created_on');
     gr.query();
 
     while (gr.next()) {
-        data.approvals.push({
-            sys_id: gr.getUniqueValue(),
-            number: gr.getDisplayValue('number'),
-            asset: gr.request_asset.getDisplayValue(),
-            user: gr.requested_for.getDisplayValue(),
-            qty: gr.getValue('quantity'),
-            total: gr.getDisplayValue('total_cost'),
-            date: gr.getDisplayValue('sys_created_on')
-        });
+        var obj = {};
+        obj.sys_id = gr.getUniqueValue();
+        obj.number = gr.getDisplayValue('number');
+        obj.user = gr.opened_by.getDisplayValue();
+        obj.asset = gr.request_asset.getDisplayValue();
+        obj.qty = gr.getValue('quantity');
+        
+        // FIX: Pulling the formatted currency value for the 'Total Cost' or 'Unit Cost'
+        // If your field name is 'total_cost', use that; otherwise 'unit_cost'
+        obj.total = gr.getDisplayValue('total_cost') || gr.getDisplayValue('unit_cost'); 
+        
+        obj.date = gr.getDisplayValue('sys_created_on');
+        obj.approval = gr.getValue('approval_status') || 'requested';
+        
+        data.approvals.push(obj);
     }
 })();]]></script>
         <servicenow>false</servicenow>
@@ -130,52 +184,111 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 05:59:40</sys_created_on>
         <sys_id>63bd40bbc3dab61002cdb34ed40131b1</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>Admin Approval</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_63bd40bbc3dab61002cdb34ed40131b1</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-14 06:00:34</sys_updated_on>
-        <template><![CDATA[<div class="glass-container">
-  <div class="container">
-    
-    <div class="header-section">
-      <h1>Pending Approvals</h1>
-      <p>Review and process incoming asset requests</p>
+        <sys_updated_on>2026-01-15 07:40:18</sys_updated_on>
+        <template><![CDATA[<div class="asset-dashboard-root">
+  
+  <aside class="side-nav">
+    <div class="nav-header">
+      <div class="logo-box"><i class="fa fa-cubes"></i></div>
+      <span class="brand-name">{{data.project_name}}</span>
     </div>
 
-    <div class="approval-grid">
-      <div ng-if="data.approvals.length == 0" class="glass-card text-center">
-        <h3>All caught up!</h3>
-        <p>No pending approvals at this time.</p>
+    <ul class="nav-links">
+      <li ng-click="c.navigate('art')">
+        <i class="fa fa-th-large"></i> <span>Dashboard</span>
+      </li>
+      <li ng-click="c.navigate('browse_and_request_page')">
+        <i class="fa fa-plus-circle"></i> <span>Request Asset</span>
+      </li>
+      <li ng-click="c.navigate('track_my_request_page')">
+        <i class="fa fa-search"></i> <span>Track Requests</span>
+      </li>
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
+        <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
+      </li>
+      <li class='active'  ng-click="c.navigate('admin_approval_page')">
+        <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
+      </li>
+      <li ng-click="c.navigate('executive_analytics_page')">
+        <i class="fa fa-bar-chart"></i> <span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="nav-footer">
+      <div class="user-pill">
+        <div class="user-init">{{data.user_initials}}</div>
+        <div class="user-info">
+          <div class="u-name">{{data.user_first_name}}</div>
+          <div class="u-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-glow"></div>
+  </aside>
+
+  <main class="main-body">
+    <div class="header-section">
+      <h1>Approval Management</h1>
+      <p>Review and process incoming team requests</p>
+
+      <div class="filter-bar">
+        <button class="pill" ng-class="{'active': c.filterStatus == 'requested'}" ng-click="c.setFilter('requested')">Pending</button>
+        <button class="pill" ng-class="{'active': c.filterStatus == 'approved'}" ng-click="c.setFilter('approved')">Approved</button>
+        <button class="pill" ng-class="{'active': c.filterStatus == 'rejected'}" ng-click="c.setFilter('rejected')">Rejected</button>
+      </div>
+    </div>
+
+    <div class="approval-list">
+      <div ng-if="(data.approvals | filter: {approval: c.filterStatus}).length == 0" class="glass-card text-center no-data">
+        <i class="fa fa-check-circle-o fa-3x mb-3" style="opacity: 0.2;"></i>
+        <h3>No {{c.filterStatus}} requests.</h3>
       </div>
 
-      <div class="approval-item glass-card" ng-repeat="item in data.approvals">
+      <div class="approval-item glass-card" ng-repeat="item in data.approvals | filter: {approval: c.filterStatus}">
         <div class="req-content">
-          <div class="user-info">
+          <div class="user-profile-section">
             <div class="avatar-circle">{{item.user.charAt(0)}}</div>
-            <div>
+            <div class="user-text">
               <span class="req-number">{{item.number}}</span>
-              <h3>{{item.user}} requested a {{item.asset}}</h3>
-              <p>Quantity: {{item.qty}} | Total: {{item.total}}</p>
+              <h3>{{item.user}} <small>wants</small> {{item.asset}}</h3>
+              <p><i class="fa fa-calendar"></i> {{item.date}}</p>
             </div>
           </div>
           
-          <div class="action-buttons">
-            <button class="btn-approve" ng-click="c.action('approved', item.sys_id)">
+          <div class="req-data-summary">
+            <div class="data-point">
+              <label>Qty</label>
+              <span>{{item.qty}}</span>
+            </div>
+            <div class="data-point">
+              <label>Cost</label>
+              <span>£{{item.total}}</span>
+            </div>
+          </div>
+          
+          <div class="action-buttons" ng-if="item.approval == 'requested'">
+            <button class="btn-approve" ng-click="c.updateStatus('approved', item.sys_id)">
               <i class="fa fa-check"></i> Approve
             </button>
-            <button class="btn-reject" ng-click="c.action('rejected', item.sys_id)">
+            <button class="btn-reject" ng-click="c.updateStatus('rejected', item.sys_id)">
               <i class="fa fa-times"></i> Reject
             </button>
+          </div>
+
+          <div class="historical-status" ng-if="item.approval != 'requested'">
+            <span class="status-badge" ng-class="'status-' + item.approval">{{item.approval}}</span>
           </div>
         </div>
       </div>
     </div>
-
-  </div>
+  </main>
 </div>]]></template>
     </sp_widget>
 </record_update>
