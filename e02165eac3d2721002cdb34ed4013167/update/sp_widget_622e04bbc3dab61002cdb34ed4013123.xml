@@ -102,7 +102,9 @@
 
 .text-green { color: #34d399; }
 .text-yellow { color: #fbbf24; }
-.text-purple { color: #a78bfa; }</css>
+.text-purple { color: #a78bfa; }
+
+</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -128,22 +130,34 @@
         top_asset: "None"
     };
     data.chartData = [];
-    var table = 'x_1862743_asset_re_asset_request_table';
+    
+    var requestTable = 'x_1862743_asset_re_asset_request_table';
+    var catalogTable = 'x_1862743_asset_re_asset_catalog_table';
 
-    // 1. Get Total Requests & Sum of Costs (Pulling 'unit_cost' field)
-    var ga = new GlideAggregate(table);
-    ga.addAggregate('COUNT');
-    ga.addAggregate('SUM', 'unit_cost'); 
-    ga.setGroup(false);
-    ga.query();
-    if (ga.next()) {
-        data.stats.total_requests = parseInt(ga.getAggregate('COUNT')) || 0;
-        var rawCost = ga.getAggregate('SUM', 'unit_cost') || 0;
-        data.stats.total_cost = parseFloat(rawCost).toLocaleString('en-GB', {minimumFractionDigits: 2});
+    // 1. NEW LOGIC: Calculate Total Inventory Value (Catalog Table)
+    // We iterate through all assets to multiply Quantity * Cost
+    var totalValue = 0;
+    var grInventory = new GlideRecord(catalogTable);
+    grInventory.addActiveQuery();
+    grInventory.query();
+    while (grInventory.next()) {
+        var qty = parseInt(grInventory.getValue('available_quantity')) || 0;
+        var cost = parseFloat(grInventory.getValue('unit_cost')) || 0;
+        totalValue += (qty * cost);
+    }
+    data.stats.total_cost = totalValue.toLocaleString('en-GB', {minimumFractionDigits: 2});
+
+    // 2. Get Total Requests count (Request Table)
+    var gaReq = new GlideAggregate(requestTable);
+    gaReq.addAggregate('COUNT');
+    gaReq.setGroup(false);
+    gaReq.query();
+    if (gaReq.next()) {
+        data.stats.total_requests = parseInt(gaReq.getAggregate('COUNT')) || 0;
     }
 
-    // 2. Get Top Requested Asset
-    var topAsset = new GlideAggregate(table);
+    // 3. Get Top Requested Asset (Request Table)
+    var topAsset = new GlideAggregate(requestTable);
     topAsset.addAggregate('COUNT', 'request_asset');
     topAsset.orderByAggregate('COUNT', 'request_asset');
     topAsset.query();
@@ -151,8 +165,8 @@
         data.stats.top_asset = topAsset.request_asset.getDisplayValue();
     }
 
-    // 3. Prepare Chart Data (Requests by Approval Status)
-    var stateCount = new GlideAggregate(table);
+    // 4. Prepare Chart Data (Requests by Approval Status)
+    var stateCount = new GlideAggregate(requestTable);
     stateCount.addAggregate('COUNT', 'approval_status');
     stateCount.groupBy('approval_status');
     stateCount.query();
@@ -163,7 +177,7 @@
         });
     }
 
-    // 4. Calculate Success Rate Percentage
+    // 5. Calculate Success Rate Percentage
     var approvedCount = 0;
     data.chartData.forEach(function(item) {
         if(item.label.toLowerCase() == 'approved') approvedCount = item.value;
@@ -176,14 +190,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 06:01:31</sys_created_on>
         <sys_id>622e04bbc3dab61002cdb34ed4013123</sys_id>
-        <sys_mod_count>12</sys_mod_count>
+        <sys_mod_count>19</sys_mod_count>
         <sys_name>Executive Analytics</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_622e04bbc3dab61002cdb34ed4013123</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-15 07:44:47</sys_updated_on>
+        <sys_updated_on>2026-01-16 07:00:53</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
   
   <aside class="side-nav">

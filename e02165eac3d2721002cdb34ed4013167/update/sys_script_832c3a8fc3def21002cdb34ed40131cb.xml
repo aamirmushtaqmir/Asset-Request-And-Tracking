@@ -27,28 +27,79 @@
         <rest_service_text/>
         <rest_variables/>
         <role_conditions/>
-        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+        <script><![CDATA[(function executeRule(current, previous) {
 
-   
-    var catalogGR = new GlideRecord('x_1862743_asset_re_asset_catalog_table'); 
-    if (catalogGR.get(current.request_asset)) {
-        var stock = parseInt(catalogGR.available_quantity);
-        var requested = parseInt(current.quantity);
+    try {
 
-        if (requested > stock) {
-            gs.addErrorMessage("Request failed: Not enough stock in the catalog.");
-            current.setAbortAction(true); 
+        // -------------------------------
+        // 1. Read and validate quantities
+        // -------------------------------
+        var newQty = parseInt(current.quantity, 10) || 0;
+        var oldQty = parseInt(previous.quantity, 10) || 0;
+
+        // Calculate only the delta
+        var qtyDifference = newQty - oldQty;
+
+        // If quantity is not increased, do nothing
+        if (qtyDifference <= 0) {
+            return;
         }
+
+        // -------------------------------
+        // 2. Get Asset Catalog record
+        // -------------------------------
+        var catalogId = current.request_asset + '';
+        if (!catalogId) {
+            gs.error("ASSET BR: No catalog reference found");
+            return;
+        }
+
+        var catalogGR = new GlideRecord('x_1862743_asset_re_asset_catalog_table');
+        if (!catalogGR.get(catalogId)) {
+            gs.error("ASSET BR: Catalog record not found: " + catalogId);
+            return;
+        }
+
+        // -------------------------------
+        // 3. Check available quantity
+        // -------------------------------
+        var availableQty = parseInt(catalogGR.available_quantity, 10) || 0;
+
+        gs.info(
+            "ASSET BR DEBUG | Available Before: " + availableQty +
+            " | Qty Difference: " + qtyDifference
+        );
+
+        if (availableQty < qtyDifference) {
+            gs.addErrorMessage("Insufficient stock available in asset catalog.");
+            current.setAbortAction(true);
+            return;
+        }
+
+        // -------------------------------
+        // 4. Update available quantity
+        // -------------------------------
+        catalogGR.available_quantity = availableQty - qtyDifference;
+        catalogGR.update();
+
+        gs.info(
+            "ASSET BR DEBUG | Available After: " +
+            catalogGR.available_quantity
+        );
+
+    } catch (e) {
+        gs.error("ASSET BR ERROR: " + e.message);
     }
 
-})(current, previous);]]></script>
+})(current, previous);
+]]></script>
         <sys_class_name>sys_script</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-12 10:49:50</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>832c3a8fc3def21002cdb34ed40131cb</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>Validate Stock Availability</sys_name>
         <sys_overrides/>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
@@ -56,7 +107,7 @@
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sys_script_832c3a8fc3def21002cdb34ed40131cb</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-12 10:49:50</sys_updated_on>
+        <sys_updated_on>2026-01-16 09:14:31</sys_updated_on>
         <template/>
         <when>before</when>
     </sys_script>

@@ -9,7 +9,12 @@
     else { $window.location.href = '/art?id=' + pageId; }
   };
 
+  // 1. Capture the sys_id from the URL parameter
+  var urlAssetId = $location.search().sys_id;
+
   c.form = {
+    // 2. Auto-populate the dropdown if sys_id is found in the URL
+    request_asset: urlAssetId || '', 
     quantity: 1,
     delivery_location: '',
     urgency: '',
@@ -26,6 +31,13 @@
     }
   };
 
+  // 3. If an asset was auto-populated from the URL, trigger the cost/total calculation immediately
+  if (urlAssetId) {
+    $timeout(function() {
+      c.updateCost();
+    });
+  }
+
   c.calculateTotal = function() {
     c.form.total_cost = (parseFloat(c.form.unit_cost) * parseInt(c.form.quantity)).toFixed(2);
   };
@@ -39,7 +51,6 @@
     c.server.get({action: 'submit', payload: c.form}).then(function(r) {
       spUtil.addInfoMessage("Request Submitted: " + r.data.newNumber);
       
-      // AUTO-REDIRECT after 1.5 seconds
       $timeout(function() {
         $window.location.href = '/art?id=track_my_request_page';
       }, 1500);
@@ -323,14 +334,14 @@ textarea.themed-input {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-15 08:03:25</sys_created_on>
         <sys_id>8ea33dccc3663a1002cdb34ed401311b</sys_id>
-        <sys_mod_count>18</sys_mod_count>
+        <sys_mod_count>19</sys_mod_count>
         <sys_name>Asset Request Form</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_8ea33dccc3663a1002cdb34ed401311b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-15 09:47:46</sys_updated_on>
+        <sys_updated_on>2026-01-16 06:38:02</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
   <aside class="side-nav">
     <div class="nav-header">

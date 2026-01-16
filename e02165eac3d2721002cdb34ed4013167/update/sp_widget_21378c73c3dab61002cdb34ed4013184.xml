@@ -137,13 +137,46 @@
   }
 }
  
-/* CHART CARD */
+
+/* Updated Circular Progress - Remove the old border and add the glow */
+.circular-progress {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  position: relative;
+  /* This creates the outer neon glow shown in the picture */
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 10px rgba(168, 85, 247, 0.2);
+  transition: all 0.3s ease;
+}
+
+.inner-circle {
+  width: 120px; /* This width determines the thickness of the line (140px - 120px = 20px thickness) */
+  height: 120px;
+  /* This must match your card/background color to look "hollow" */
+  background: #24133f; 
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+/* Cleanup the Chart Card so it doesn't override the progress bar */
 .chart-card {
   text-align: center;
-  .circular-progress {
-    width: 130px; height: 130px; border-radius: 50%; border: 8px solid rgba(255,255,255,0.1);
-    margin: 25px auto; display: flex; align-items: center; justify-content: center;
-    .inner-circle { font-size: 1.8rem; font-weight: 700; }
+  p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 15px;
+    padding: 0 10px;
   }
 }
  
@@ -198,14 +231,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 05:31:08</sys_created_on>
         <sys_id>21378c73c3dab61002cdb34ed4013184</sys_id>
-        <sys_mod_count>46</sys_mod_count>
+        <sys_mod_count>51</sys_mod_count>
         <sys_name>Asset Dashboard</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_21378c73c3dab61002cdb34ed4013184</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-15 11:49:36</sys_updated_on>
+        <sys_updated_on>2026-01-16 05:18:36</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
 
   <aside class="side-nav">
@@ -227,7 +260,7 @@
       <li ng-click="c.navigate('my_assigned_inventory_page')">
         <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
       </li>
-       <li ng-click="c.navigate('admin_approval_page')">
+      <li ng-click="c.navigate('admin_approval_page')">
         <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
       </li>
       <li ng-click="c.navigate('executive_analytics_page')">
@@ -289,9 +322,14 @@
       <div class="right-col">
         <div class="glass-card chart-card">
           <h3>Approval Rate</h3>
-          <div class="circular-progress">
-            <div class="inner-circle">{{data.success_rate}}%</div>
+
+          <div class="circular-progress" 
+               ng-style="{'background': 'conic-gradient(#a855f7 0% ' + data.success_rate + '%, rgba(255,255,255,0.05) ' + data.success_rate + '% 100%)'}">
+            <div class="inner-circle">
+              {{data.success_rate}}%
+            </div>
           </div>
+
           <p>Total asset request success metrics for your account.</p>
         </div>
       </div>

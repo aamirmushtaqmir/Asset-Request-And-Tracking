@@ -2,37 +2,40 @@
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[api.controller = function($window, $location) {
-  var c = this;
-  c.selectedCat = 'All';
-  
-  // Set current page for sidebar highlight
-  c.currentPage = $location.search().id || 'browse_and_request_page';
+	var c = this;
+	c.selectedCat = 'All';
 
-  // Navigation Logic for Sidebar
-  c.navigate = function(pageId) {
-    if (pageId === 'art') {
-      $window.location.href = '/art';
-    } else {
-      $window.location.href = '/art?id=' + pageId;
-    }
-  };
+	// Set current page for sidebar highlight
+	c.currentPage = $location.search().id || 'browse_and_request_page';
 
-  // Catalog Filtering
-  c.setFilter = function(cat) {
-    c.selectedCat = cat;
-  };
+	// Navigation Logic for Sidebar
+	c.navigate = function(pageId) {
+		if (pageId === 'art') {
+			$window.location.href = '/art';
+		} else {
+			$window.location.href = '/art?id=' + pageId;
+		}
+	};
 
-  c.categoryFilter = function(item) {
-    if (c.selectedCat === 'All') return true;
-    return item.category === c.selectedCat;
-  };
+	// Catalog Filtering
+	c.setFilter = function(cat) {
+		c.selectedCat = cat;
+	};
 
-  // Redirect to Request Form
-  c.selectAsset = function(assetID) {
-    var table = 'x_1862743_asset_re_asset_request_table';
-    var url = '?id=form&table=' + table + '&sys_id=-1&view=sp&query=request_asset=' + assetID;
-    $location.url(url);
-  };
+	c.categoryFilter = function(item) {
+		if (c.selectedCat === 'All') return true;
+		return item.category === c.selectedCat;
+	};
+	c.requestAsset = function(assetID) {
+		$window.location.href = '/art?id=asset_request_form_page&sys_id=' + assetID;
+	};
+
+	// Redirect to Request Form
+	c.selectAsset = function(assetID) {
+		var table = 'x_1862743_asset_re_asset_request_table';
+		var url = '?id=form&table=' + table + '&sys_id=-1&view=sp&query=request_asset=' + assetID;
+		$location.url(url);
+	};
 };]]></client_script>
         <controller_as>c</controller_as>
         <css>/* ROOT STRUCTURE */
@@ -220,16 +223,16 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-14 05:44:21</sys_created_on>
         <sys_id>9b3a8cb3c3dab61002cdb34ed40131db</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>22</sys_mod_count>
         <sys_name>Browse And Request Widget</sys_name>
         <sys_package display_value="Asset Request and Tracking" source="x_1862743_asset_re">e02165eac3d2721002cdb34ed4013167</sys_package>
         <sys_policy/>
         <sys_scope display_value="Asset Request and Tracking">e02165eac3d2721002cdb34ed4013167</sys_scope>
         <sys_update_name>sp_widget_9b3a8cb3c3dab61002cdb34ed40131db</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-15 11:54:44</sys_updated_on>
+        <sys_updated_on>2026-01-16 07:13:53</sys_updated_on>
         <template><![CDATA[<div class="asset-dashboard-root">
-  
+
   <aside class="side-nav">
     <div class="nav-header">
       <div class="logo-box"><i class="fa fa-cubes"></i></div>
@@ -246,10 +249,10 @@
       <li ng-click="c.navigate('track_my_request_page')">
         <i class="fa fa-search"></i> <span>Track Requests</span>
       </li>
-       <li ng-click="c.navigate('my_assigned_inventory_page')">
+      <li ng-click="c.navigate('my_assigned_inventory_page')">
         <i class="fa fa-laptop"></i> <span>My Assigned Assets</span>
       </li>
-       <li ng-click="c.navigate('admin_approval_page')">
+      <li ng-click="c.navigate('admin_approval_page')">
         <i class="fa fa-check-square-o"></i> <span>Admin Approval</span>
       </li>
       <li ng-click="c.navigate('executive_analytics_page')">
@@ -273,7 +276,7 @@
     <div class="content-header text-center">
       <h1>Asset Catalog</h1>
       <p>Select hardware or software to submit a new request</p>
-      
+
       <div class="filter-bar">
         <button class="pill" ng-class="{'active': c.selectedCat == 'All'}" ng-click="c.setFilter('All')">All</button>
         <button class="pill" ng-repeat="cat in data.categories" 
@@ -297,7 +300,7 @@
               <span><i class="fa fa-cubes"></i> Stock: {{item.qty}}</span>
               <span class="price-tag">£{{item.cost}}</span>
             </div>
-            <button class="btn-request" ng-click="c.navigate('asset_request_form_page')">
+            <button class="btn-request" ng-click="c.requestAsset(item.sys_id)">
               Request Asset
             </button>
           </div>
